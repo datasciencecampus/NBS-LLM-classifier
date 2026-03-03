@@ -1,13 +1,5 @@
 ### Project structure ###
-data/*
 outputs/*
-
-# Exclude demo data
-!demo/data/raw/ISCO.xlsx
-!demo/data/raw/NLFS_2024Q1_INDIVIDUAL.csv
-!demo/data/raw/NLFS_2024Q2_INDIVIDUAL.csv
-!demo/data/knowledgebase.csv
-!demo/data/query.csv
 
 ### Contentious file types (can be removed at user discretion) ###
 
