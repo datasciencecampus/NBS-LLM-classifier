@@ -1,13 +1,18 @@
 <img src="https://github.com/datasciencecampus/awesome-campus/blob/master/ons_logo.png">
 
-# Repository name
+# NBS LLM Classifier
 
 # Introduction
 ## About
-*Describe what this repo contains and what the project is.*
+This is an implementation of the [ClassifAI](https://github.com/datasciencecampus/classifai) Python package that supports the semi-automatic classification of free text fields in the [NBS](https://nigerianstat.gov.ng/) Labour Force Survey to [ISCO](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-occupation/) and [ISIC](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-economic-activities/) coding schemes.
 
 ## Installation
-*Describe technical set-up. Such as the required dependencies.*
+Install the ClassifAI package directly from GitHub into your Python environment:
+
+```bash
+pip install "git+https://github.com/datasciencecampus/classifAI"
+pip install "classifAI[huggingface]"
+```
 
 ### Pre-commit actions
 This repository contains a configuration of pre-commit hooks. These are language agnostic and focussed on repository security (such as detection of passwords and API keys). If approaching this project as a developer, you are encouraged to install and enable `pre-commits` by running the following in your shell:
@@ -29,13 +34,16 @@ Once pre-commits are activated, whenever you commit to this repository a series 
 *Explain how to use the things in the repo.*
 
 ### Workflow
-*You may wish to consider generating a graph to show your project workflow. GitHub markdown provides native support for [mermaid](https://mermaid.js.org/syntax/flowchart.html), an example of which is provided below:*
 
 ```mermaid
-flowchart TD
-   id1[(Some data)] --> id2(Some processing)
-   id3[(More data)] --> id2
-   id2 --> id4[Some output]
+flowchart TB
+    A[Labelled examples] --> B[Embedding model]
+    A1[Query data] --> B
+    B --> C[Vector data]
+    C --> |Stored in| D[(VectorStore)]
+    B --> C1[Vector data]
+    C1 --> |Searched against| D
+    D -.-> E[Cosine similarity scores ranked]
 ```
 
 # License
