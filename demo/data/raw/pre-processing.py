@@ -1,6 +1,6 @@
-# Pre-processing
+# Pre-processing #
 
-#%%
+# Load libraries
 import pandas as pd
 import numpy as np
 import pyreadstat
@@ -8,7 +8,6 @@ import pyreadstat
 # ISCO code scheme
 # Source: International Labour Organization (ISCO) 
 # URL: https://www.ilo.org/ilostat-files/Documents/ISCO.xlsx
-#%%
 isco = pd.read_excel('ISCO.xlsx', sheet_name = 'ISCO_08', dtype = str,
                      usecols=['unit','description'])
 isco['isco'] = isco['unit'] + ' ' + isco['description']
@@ -19,7 +18,6 @@ isco.head()
 # ISIC code scheme
 # Source: International Labour Organization (ISCO) 
 # # URL: http://www.ilo.org/ilostat-files/Documents/ISIC.xlsx
-#%%
 isic = pd.read_excel('ISIC.xlsx', sheet_name = 'ISIC_Rev_4', dtype = str,
                      usecols=['4-digits ','description'])
 isic['isic'] = isic['4-digits '] + ' ' + isic['description']
@@ -29,7 +27,6 @@ isic.head()
 
 # Nigeria Labour Force Survey Q1 2024
 # Source: https://microdata.nigerianstat.gov.ng/index.php/catalog/151
-#%%
 q1_raw, meta = pyreadstat.read_dta('NLFS_2024Q1_INDIVIDUAL 1.dta',
                                 encoding='utf-8',
                                 usecols=['interview_key','mjj1','mjj2a','mjj2b','mjj2cclean','sjj1a','sjj1b','sjj1cclean',
@@ -75,7 +72,6 @@ q1.to_csv('../pre-processed/NLFS_2024Q1.csv', index=False)
 
 # Nigeria Labour Force Survey Q2 2024
 # https://microdata.nigerianstat.gov.ng/index.php/catalog/152
-#%%
 q2_raw, meta = pyreadstat.read_sav('NLFS_2024Q2_INDIVIDUAL.sav',
                                    encoding='utf-8',
                                    usecols=['interview_key','mjj1','mjj2a','mjj2b','mjj2cclean','sjj1a','sjj1b','sjj1cclean',
@@ -118,5 +114,3 @@ q2_second = isic_q2_second[['interview_key','jobnumber',
 q2 = pd.concat([q2_main, q2_second], ignore_index=True)
 q2 = q2[q2[['isco','isic']].notnull().all(axis=1)]
 q2.to_csv('../pre-processed/NLFS_2024Q2.csv', index=False)
-
-# %%
