@@ -25,7 +25,7 @@ combined_results['prediction_2'] = combined_results['prediction_2'].astype('Int6
 combined_results['prediction_3'] = combined_results['prediction_3'].astype('Int64')
 validated = pd.read_csv('../data/query_isco.csv')
 test_results = validated.merge(combined_results, left_on='id', right_on='query_id')
-test_results.head()
+test_results['Match top 1'] = test_results['validated'] == test_results['prediction_1']
 
 # Overall accuracy
 accuracy = (test_results['prediction_1'] == test_results['validated']).mean()*100
