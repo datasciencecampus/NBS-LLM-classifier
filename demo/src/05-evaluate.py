@@ -7,24 +7,28 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 
-# ISCO -----------------------------------------------------------------------
+# ISCO ---------------------------------------------------------
 
-# Rank search results
+# Find top 3 search results and join with validated codes
 search_results = pd.read_csv('../data/isco_search_results.csv')
 search_results_scores = search_results[['query_id','doc_id','score']].groupby(['query_id','doc_id'])['score'].max().reset_index()
 search_results_unique = pd.DataFrame(search_results[['query_id','doc_id']].groupby(['query_id'])['doc_id'].value_counts()).reset_index().drop('count', axis=1)
 search_results_unique = search_results_unique.merge(search_results_scores, left_on=['query_id', 'doc_id'], right_on=['query_id', 'doc_id'])
 search_results_unique['rank'] = search_results_unique.groupby('query_id')['doc_id'].cumcount()
-search_results_top = search_results_unique[search_results_unique['rank'] == 0]
-search_results_top = search_results_top.rename(columns={'query_id': 'id'})
-search_results_top['id'] = search_results_top['id'].astype(int)
-
-# Join to validated data
+search_results_0 = search_results_unique[search_results_unique['rank'] == 0].rename(columns={'doc_id': 'prediction_1'})
+search_results_1 = search_results_unique[search_results_unique['rank'] == 1].rename(columns={'doc_id': 'prediction_2'})
+search_results_2 = search_results_unique[search_results_unique['rank'] == 2].rename(columns={'doc_id': 'prediction_3'})
+combined_results = search_results_0.merge(search_results_1[['query_id','prediction_2']], on='query_id', how='left')
+combined_results = combined_results.merge(search_results_2[['query_id','prediction_3']], on='query_id', how='left')
+combined_results = combined_results[['query_id','prediction_1','score','prediction_2','prediction_3']]
+combined_results['prediction_2'] = combined_results['prediction_2'].astype('Int64')
+combined_results['prediction_3'] = combined_results['prediction_3'].astype('Int64')
 validated = pd.read_csv('../data/query_isco.csv')
-test_results = validated.merge(search_results_top, on='id', how='left')
+test_results = validated.merge(combined_results, left_on='id', right_on='query_id')
+test_results.head()
 
 # Overall accuracy
-accuracy = (test_results['doc_id'] == test_results['validated']).mean()*100
+accuracy = (test_results['prediction_1'] == test_results['validated']).mean()*100
 print(f'In {round(accuracy,1)}% of cases the predicted code matched the validated code.')
 
 # Plot Coverage vs Accuracy
@@ -34,7 +38,7 @@ results = []
 for threshold in thresholds:
     covered = test_results.loc[test_results['score'] > threshold]
     coverage = len(covered) / len(test_results)
-    accuracy = (covered['validated'] == covered['doc_id']).mean()
+    accuracy = (covered['validated'] == covered['prediction_1']).mean()
     results.append({'threshold': threshold, 'coverage': coverage, 'accuracy': accuracy})
 
 results_df = pd.DataFrame(results)
@@ -75,5 +79,3 @@ plt.gca().yaxis.set_ticks_position('none')
 plt.gca().yaxis.tick_right()
 plt.gca().yaxis.set_label_position('right')
 plt.show()
-
-# ISIC -----------------------------------------------------------------------
