@@ -1,5 +1,6 @@
 ### Project structure ###
 outputs/*
+vector_store/*
 
 ### Contentious file types (can be removed at user discretion) ###
 
