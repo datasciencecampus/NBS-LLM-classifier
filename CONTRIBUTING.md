@@ -29,7 +29,7 @@ Thank you for your interest in contributing to the NBS LLM Classifier project! W
 
 ## Code Style, Quality & Pre-commit Hooks
 - Please follow the existing code style (see `pyproject.toml`).
-- **Pre-commit hooks are required**! They help catch formatting, linting, and quality issues before code is committed. This keeps the codebase clean and consistent for everyone. 💡
+- **Pre-commit hooks are required**! They help catch formatting, linting, and quality issues before code is committed. This keeps the codebase clean and consistent for everyone.
 - To install pre-commit hooks:
   ```sh
   pip install pre-commit
