@@ -32,7 +32,6 @@ outputs/*
 *.jpg
 *.jpeg
 *.tif
-*.svg
 
 # The following was created by https://www.toptal.com/developers/gitignore/api/macos,windows,r,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,r,python
