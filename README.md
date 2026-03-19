@@ -1,18 +1,69 @@
-<img src="https://github.com/datasciencecampus/awesome-campus/blob/master/ons_logo.png">
+![ONS Logo](./ONS_Logo_Digital_Colour_Landscape_English_RGB.svg)
 
-# NBS LLM Classifier
-
-# Introduction
-## About
+# ✨ NBS LLM Classifier ✨
 This is an implementation of the [ClassifAI](https://github.com/datasciencecampus/classifai) Python package that supports the semi-automatic classification of free text fields in the [NBS](https://nigerianstat.gov.ng/) Labour Force Survey to [ISCO](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-occupation/) and [ISIC](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-economic-activities/) coding schemes.
 
-## Installation
-Install the ClassifAI package directly from GitHub into your Python environment:
-
-```bash
-pip install "git+https://github.com/datasciencecampus/classifAI"
-pip install "classifAI[huggingface]"
+## Folder Structure
 ```
+├── data/
+│   ├── pre-processed            # NLFS survey data
+|   └── raw                      # ISCO/ISIC coding schemes
+├── demo/                        # Example workflow
+├── docs/                        # Additional documentation
+├── outputs/                     # Seach results
+├── src/                         # Source code
+|   └── nbs_llm_classifier/ 
+│       ├── config.py            # Pipeline settings and parameters
+│       ├── evaluate.py          # Run classification metrics
+│       ├── knowledgebase.py     # Create knowledgebase
+│       ├── query.py             # Build input query
+│       ├── search.py            # Search input query against vectorstore
+│       └── vectorstore.py       # Build vectorstore
+│   └── main.py                  # Run end-to-end pipeline
+├── tests/                       # All tests (unit, integration, and end-to-end)
+├── config.json                  # Pipeline settings and parameters
+├── requirements.txt             # ClassifAI package and dependencies
+```
+
+## Installation
+
+1. Clone the repository
+
+```sh
+git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
+cd NBS-LLM-classifier
+```
+
+2. Set up virtual environment  
+A *virtual environment* allows you to manage the installation and updating of Python packages that are needed for your project without interfering with packages used by the system or by other projects.
+
+```sh
+python -m venv venv
+venv\Scripts\activate.bat
+```
+
+3. Install the required dependencies 
+```sh
+pip install -r requirements.txt
+```
+
+## Usage
+
+1. Save knowledgebase (ISCO/ISIC coding schemes and manually labelled examples) and input query in `data/` subfolders.
+2. Check `config.json` includes appropriate embedding model and points to the correct file paths.
+3. Run `src/main.py` in the command-line interface.
+4. Check accuracy and coverage metrics.
+5. Merge `outputs/search_results.csv` file with raw data using joining variable.
+6. Classify data by:   
+   a. Partial automation + manual/semi-automated coding   
+   b. Semi-automated coding   
+7. Save manually coded data and add to knowledgebase.
+
+## Dependencies
+[ClassifAI](https://datasciencecampus.github.io/classifai/) is the core Python package used in the NBS LLM Classifier pipeline. It uses semantic search over a knowledgebase of previously coded examples to classify free-text survey responses.
+Please see `requirements.txt` for other dependencies.
+
+## Configuration
 
 ### Pre-commit actions
 This repository contains a configuration of pre-commit hooks. These are language agnostic and focussed on repository security (such as detection of passwords and API keys). If approaching this project as a developer, you are encouraged to install and enable `pre-commits` by running the following in your shell:
@@ -30,30 +81,14 @@ Once pre-commits are activated, whenever you commit to this repository a series 
 
 **NOTE:** Pre-commit hooks execute Python, so it expects a working Python build.
 
-## Usage
-*Explain how to use the things in the repo.*
+## Contributing
+We welcome contributions from internal colleagues! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on raising issues, opening branches, and submitting pull requests.
 
-### Workflow
+## Security
+Please see [SECURITY.md](SECURITY.md) for information on reporting security vulnerabilities and our security policy.
 
-```mermaid
-flowchart TB
-    A[Labelled examples] --> B[Embedding model]
-    A1[Query data] --> B
-    B --> C[Vector data]
-    C --> |Stored in| D[(VectorStore)]
-    B --> C1[Vector data]
-    C1 --> |Searched against| D
-    D -.-> E[Cosine similarity scores ranked]
-```
+# Data Science Campus
+At the [Data Science Campus](https://datasciencecampus.ons.gov.uk/about-us/) we apply data science, and build skills, for public good across the UK and internationally. Get in touch with the Campus at [datasciencecampus\@ons.gov.uk](datasciencecampus@ons.gov.uk).
 
 # License
-
-<!-- Unless stated otherwise, the codebase is released under [the MIT Licence][mit]. -->
-
-The code, unless otherwise stated, is released under [the MIT Licence][mit].
-
-The documentation for this work is subject to [© Crown copyright][copyright] and is available under the terms of the [Open Government 3.0][ogl] licence.
-
-[mit]: LICENCE
-[copyright]: http://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/
-[ogl]: http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
+See [LICENSE](LICENSE) for details.
