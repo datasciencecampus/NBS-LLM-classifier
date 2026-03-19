@@ -29,7 +29,7 @@ This is an implementation of the [ClassifAI](https://github.com/datasciencecampu
 
 1. Clone the repository
 
-```sh
+```bash
 git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
 cd NBS-LLM-classifier
 ```
@@ -37,13 +37,13 @@ cd NBS-LLM-classifier
 2. Set up virtual environment  
 A *virtual environment* allows you to manage the installation and updating of Python packages that are needed for your project without interfering with packages used by the system or by other projects.
 
-```sh
+```bash
 python -m venv venv
 venv\Scripts\activate.bat
 ```
 
 3. Install the required dependencies 
-```sh
+```bash
 pip install -r requirements.txt
 ```
 
@@ -82,7 +82,7 @@ Once pre-commits are activated, whenever you commit to this repository a series 
 **NOTE:** Pre-commit hooks execute Python, so it expects a working Python build.
 
 ## Contributing
-We welcome contributions from internal colleagues! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on raising issues, opening branches, and submitting pull requests.
+We welcome contributions from internal and NSO colleagues! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on raising issues, opening branches, and submitting pull requests.
 
 ## Security
 Please see [SECURITY.md](SECURITY.md) for information on reporting security vulnerabilities and our security policy.
