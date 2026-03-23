@@ -61,13 +61,12 @@ flowchart TB
     A[Labelled examples] --> C[Embedding model]
     B[Query data] --> C
     C --> D[Vector data]
-    C --> F[Vector data]
-    D --> |Stored in| E[(VectorStore)]
-    F --> |Searched against| E
-    E -.-> G[Cosine similarity scores ranked]
-    G -.-> H[Partial automation]
-    H -.-> I[Manual/semi-automated coding]
-    I -.-> A
+    D --> |Query<br>searched against| E[(VectorStore)]
+    D --> |Knowledgebase<br>stored in| E
+    E -.-> F[Cosine similarity scores ranked]
+    F -.-> G[Partial automation]
+    G -.-> H[Manual/semi-automated coding]
+    H -.-> A
 
 subgraph manual
 A
