@@ -27,24 +27,53 @@ This is an implementation of the [ClassifAI](https://github.com/datasciencecampu
 
 ## Installation
 
-1. Clone the repository
+1. Clone the repository    
 
 ```bash
 git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
 cd NBS-LLM-classifier
 ```
 
-2. Set up virtual environment  
+2. Set up virtual environment    
 A *virtual environment* allows you to manage the installation and updating of Python packages that are needed for your project without interfering with packages used by the system or by other projects.
 
+If you are using Windows run this:
 ```bash
 python -m venv venv
 venv\Scripts\activate.bat
 ```
 
-3. Install the required dependencies 
+If you are on a Mac:
+
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+
+3. Install the required dependencies    
 ```bash
 pip install -r requirements.txt
+```
+
+## Workflow
+```mermaid
+flowchart TB
+    A[Labelled examples] --> C[Embedding model]
+    B[Query data] --> C
+    C --> D[Vector data]
+    C --> F[Vector data]
+    D --> |Stored in| E[(VectorStore)]
+    F --> |Searched against| E
+    E -.-> G[Cosine similarity scores ranked]
+    G -.-> H[Partial automation]
+    H -.-> I[Manual/semi-automated coding]
+    I -.-> A
+
+subgraph manual
+A
+end
+
+style manual color:#2121,fill-opacity:0,stroke-width:0px
 ```
 
 ## Usage
@@ -52,11 +81,16 @@ pip install -r requirements.txt
 1. Save knowledgebase (ISCO/ISIC coding schemes and manually labelled examples) and input query in `data/` subfolders.
 2. Check `config.json` includes appropriate embedding model and points to the correct file paths.
 3. Run `src/main.py` in the command-line interface.
+
+```bash
+python main.py all
+```
+
 4. Check accuracy and coverage metrics.
 5. Merge `outputs/search_results.csv` file with raw data using joining variable.
 6. Classify data by:   
-   a. Partial automation + manual/semi-automated coding   
-   b. Semi-automated coding   
+   a. *Partial automation + manual/semi-automated coding*. Cases can be automatically classified where the pre-validated code matches 'Prediction 1'. The remaining cases can be classified using the top-3 predicted codes.   
+   b. *Semi-automated coding*. The candidate ISCO/ISIC codes predicted by the model can be used to guide manual coding.   
 7. Save manually coded data and add to knowledgebase.
 
 ## Dependencies
