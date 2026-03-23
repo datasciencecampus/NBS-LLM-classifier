@@ -82,8 +82,10 @@ style manual color:#2121,fill-opacity:0,stroke-width:0px
 3. Run `src/main.py` in the command-line interface.
 
 ```bash
-python main.py all
+python src/main.py all
 ```
+
+If you want to run particular step of the pipeline swap out `all` for one of `knowledgebase`, `vectorstore`, `query`, `search` or `evaluate`.
 
 4. Check accuracy and coverage metrics.
 5. Merge `outputs/search_results.csv` file with raw data using joining variable.
