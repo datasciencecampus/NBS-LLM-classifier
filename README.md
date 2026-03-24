@@ -30,34 +30,24 @@ This is an implementation of the [ClassifAI](https://datasciencecampus.github.io
 
 ## Installation
 
-1. Clone the repository    
+**1. Clone the repository**    
 
 ```bash
 git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
 cd NBS-LLM-classifier
 ```
 
-2. Set up virtual environment    
+**2. Set up virtual environment**    
 A *virtual environment* allows you to manage the installation and updating of Python packages that are needed for your project without interfering with packages used by the system or by other projects.
 
-Create the virtual environment,
+Create the virtual environment and then activate it.
 ```bash
 python -m venv venv
+venv\Scripts\activate.bat # on Windows
+source venv/bin/activate # on a Mac
 ```
 
-then activate it:
-
-on Windows
-```bash
-venv\Scripts\activate.bat
-```
-
-or on a Mac
-```bash
-source venv/bin/activate
-```
-
-3. Install the required dependencies    
+**3. Install the required dependencies**    
 ```bash
 pip install -r requirements.txt
 ```
