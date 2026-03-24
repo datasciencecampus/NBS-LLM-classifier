@@ -1,7 +1,7 @@
 ![ONS Logo](./ONS_Logo_Digital_Colour_Landscape_English_RGB.svg)
 
 # ✨ NBS LLM Classifier ✨
-This is an implementation of the [ClassifAI](https://github.com/datasciencecampus/classifai) Python package that supports the semi-automatic classification of free text fields in the [NBS](https://nigerianstat.gov.ng/) Labour Force Survey to [ISCO](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-occupation/) and [ISIC](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-economic-activities/) coding schemes.
+This is an implementation of the [ClassifAI](https://github.com/datasciencecampus/classifai) Python package that supports the semi-automatic classification of free text responses in the [NBS](https://nigerianstat.gov.ng/) Labour Force Survey to [ISCO](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-occupation/) and [ISIC](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-economic-activities/) coding schemes.
 
 ## Folder Structure
 ```
@@ -9,11 +9,14 @@ This is an implementation of the [ClassifAI](https://github.com/datasciencecampu
 │   ├── pre-processed            # NLFS survey data
 |   └── raw                      # ISCO/ISIC coding schemes
 ├── demo/                        # Example workflow
+|   └── data/ 
+│       ├── pre-processed
+│       └── raw   
 ├── docs/                        # Additional documentation
-├── outputs/                     # Seach results
+├── outputs/                     # Search results
 ├── src/                         # Source code
 |   └── nbs_llm_classifier/ 
-│       ├── config.py            # Pipeline settings and parameters
+│       ├── config.py            # Main configuration file
 │       ├── evaluate.py          # Run classification metrics
 │       ├── knowledgebase.py     # Create knowledgebase
 │       ├── query.py             # Build input query
@@ -39,15 +42,15 @@ A *virtual environment* allows you to manage the installation and updating of Py
 
 If you are using Windows run this:
 ```bash
-python -m venv venv
-venv\Scripts\activate.bat
+C:\Users\NBS-LLM-classifer> python -m venv venv
+C:\Users\NBS-LLM-classifer> venv\Scripts\activate.bat
 ```
 
 If you are on a Mac:
 
 ```bash
-python -m venv venv
-source venv/bin/activate
+$ python -m venv venv
+$ source venv/bin/activate
 ```
 
 3. Install the required dependencies    
@@ -58,8 +61,8 @@ pip install -r requirements.txt
 ## Workflow
 ```mermaid
 flowchart TB
-    A[Labelled examples] --> C[Embedding model]
-    B[Query data] --> C
+    A[Labelled examples] --> C[LLM encoder model]
+    B[Query] --> C
     C --> D[Vector data]
     D --> |Query<br>searched against| E[(VectorStore)]
     D --> |Knowledgebase<br>stored in| E
@@ -75,17 +78,29 @@ end
 style manual color:#2121,fill-opacity:0,stroke-width:0px
 ```
 
+<br>
+The ISCO and ISIC classification schemes are combined with 4-digit coded occupations and activities from the Nigeria Labour Force Survey (NLFS) to create a knowledgebase. These labelled examples are are embedded as vectors and saved alongside the original free text as a VectorStore object. The transformation of text into numerical representations is handled by a vectoriser model. Query data from a different wave of the NLFS is also embedded as a vector and searched against the labelled examples in the VectorStore. The semantic similarity or distance between each vector query and knowledgebase entry is then calculated. The nearest N labelled examples are returned with their distance.    
+<br>
+
+**Example output**
+
+|`query_id` |`query_text` |`pre_validated` |`pred1` |`score` |`pred2` |`pred3` |`match_top_1` |   
+|:--- |:--- |:--- |:--- |:--- |:--- |:--- |:--- |
+|2855 | trader selling of charcoal |5211 |5211 Stall and Market Salespersons |0.9694552 |9520 Street Vendors (excluding Food)| NA | True |
+
+If the top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
+
 ## Usage
 
 1. Save knowledgebase (ISCO/ISIC coding schemes and manually labelled examples) and input query in `data/` subfolders.
-2. Check `config.json` includes appropriate embedding model and points to the correct file paths.
+2. Check `config.json` includes appropriate LLM encoder model and points to the correct file paths.
 3. Run `src/main.py` in the command-line interface.
 
 ```bash
 python src/main.py all
 ```
 
-If you want to run particular step of the pipeline swap out `all` for one of `knowledgebase`, `vectorstore`, `query`, `search` or `evaluate`.
+If you want to run a particular step of the pipeline swap out `all` for `knowledgebase`, `vectorstore`, `query`, `search` or `evaluate`.
 
 4. Check accuracy and coverage metrics.
 5. Merge `outputs/search_results.csv` file with raw data using joining variable.
