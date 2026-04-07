@@ -29,6 +29,7 @@ class AppConfig:
     root_dir: Path
     model_name: str
     n_results: int
+    progress_verbosity: str
     paths: Paths
 
 
@@ -71,7 +72,12 @@ def load_config(config_path: Path) -> AppConfig:
 
     model_name = data.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
     n_results = int(data.get("n_results", 15))
+    progress_verbosity = str(data.get("progress_verbosity", "normal")).lower()
 
     return AppConfig(
-        root_dir=root_dir, model_name=model_name, n_results=n_results, paths=paths
+        root_dir=root_dir,
+        model_name=model_name,
+        n_results=n_results,
+        progress_verbosity=progress_verbosity,
+        paths=paths,
     )

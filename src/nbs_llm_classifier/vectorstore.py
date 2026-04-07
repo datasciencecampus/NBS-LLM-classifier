@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 import truststore
 
 from classifai.indexers import VectorStore
 from classifai.vectorisers import HuggingFaceVectoriser
 
 from .config import AppConfig
+from .utils import ProgressReporter
 
 
 class NormalizedHfVectoriser(HuggingFaceVectoriser):
@@ -24,10 +26,40 @@ def create_vectoriser(config: AppConfig) -> NormalizedHfVectoriser:
     )
 
 
-def build_vectorstores(config: AppConfig) -> None:
+def build_vectorstores(
+    config: AppConfig,
+    reporter: ProgressReporter | None = None,
+) -> dict[str, object]:
+    if reporter:
+        reporter.step(
+            stage="vectorstore",
+            current=1,
+            total=4,
+            message="ensuring vector store directory",
+            level="verbose",
+        )
     config.paths.vector_store_dir.mkdir(parents=True, exist_ok=True)
+
+    if reporter:
+        reporter.step(
+            stage="vectorstore",
+            current=2,
+            total=4,
+            message="creating embedding vectoriser",
+            level="verbose",
+            metrics={"model": config.model_name},
+        )
     vectoriser = create_vectoriser(config)
 
+    kb_isco_rows = len(pd.read_csv(config.paths.kb_isco_file, dtype=str))
+    if reporter:
+        reporter.step(
+            stage="vectorstore",
+            current=3,
+            total=4,
+            message="building ISCO vector store",
+            metrics={"rows": kb_isco_rows},
+        )
     VectorStore(
         file_name=str(config.paths.kb_isco_file),
         data_type="csv",
@@ -36,6 +68,15 @@ def build_vectorstores(config: AppConfig) -> None:
         overwrite=True,
     )
 
+    kb_isic_rows = len(pd.read_csv(config.paths.kb_isic_file, dtype=str))
+    if reporter:
+        reporter.step(
+            stage="vectorstore",
+            current=4,
+            total=4,
+            message="building ISIC vector store",
+            metrics={"rows": kb_isic_rows},
+        )
     VectorStore(
         file_name=str(config.paths.kb_isic_file),
         data_type="csv",
@@ -43,3 +84,9 @@ def build_vectorstores(config: AppConfig) -> None:
         output_dir=str(config.paths.vector_store_dir / "isic"),
         overwrite=True,
     )
+
+    return {
+        "isco_dir": "vector_store/isco",
+        "isic_dir": "vector_store/isic",
+        "model": config.model_name,
+    }

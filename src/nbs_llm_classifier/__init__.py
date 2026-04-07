@@ -3,6 +3,7 @@
 __all__ = [
     "config",
     "knowledgebase",
+    "utils",
     "query",
     "search",
     "vectorstore",

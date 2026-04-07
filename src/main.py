@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
+from time import perf_counter
+from typing import Callable
 
 from nbs_llm_classifier.config import load_config
 from nbs_llm_classifier.knowledgebase import build_knowledgebases
+from nbs_llm_classifier.utils import ProgressReporter, StageContext
 from nbs_llm_classifier.vectorstore import build_vectorstores
 from nbs_llm_classifier.query import build_queries
 from nbs_llm_classifier.search import run_searches
@@ -18,6 +21,12 @@ def _parse_args() -> argparse.Namespace:
         type=Path,
         default=Path("config.json"),
         help="Path to the configuration file",
+    )
+    parser.add_argument(
+        "--progress",
+        choices=["quiet", "normal", "verbose"],
+        default=None,
+        help="Progress verbosity override (default: config value)",
     )
 
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -34,23 +43,58 @@ def _parse_args() -> argparse.Namespace:
 def main() -> None:
     args = _parse_args()
     config = load_config(args.config)
+    progress_level = args.progress or config.progress_verbosity
+    reporter = ProgressReporter(verbosity=progress_level)
 
-    if args.command == "knowledgebase":
-        build_knowledgebases(config)
-    elif args.command == "vectorstore":
-        build_vectorstores(config)
-    elif args.command == "query":
-        build_queries(config)
-    elif args.command == "search":
-        run_searches(config)
-    elif args.command == "evaluate":
-        evaluate_search_results(config)
-    elif args.command == "all":
-        build_knowledgebases(config)
-        build_vectorstores(config)
-        build_queries(config)
-        run_searches(config)
-        evaluate_search_results(config)
+    stage_map: dict[str, Callable[..., dict[str, object]]] = {
+        "knowledgebase": build_knowledgebases,
+        "vectorstore": build_vectorstores,
+        "query": build_queries,
+        "search": run_searches,
+        "evaluate": evaluate_search_results,
+    }
+
+    if args.command == "all":
+        pipeline = [
+            ("knowledgebase", build_knowledgebases),
+            ("vectorstore", build_vectorstores),
+            ("query", build_queries),
+            ("search", run_searches),
+            ("evaluate", evaluate_search_results),
+        ]
+    else:
+        pipeline = [(args.command, stage_map[args.command])]
+
+    total_stages = len(pipeline)
+    reporter.pipeline_start(command=args.command, total_stages=total_stages)
+    pipeline_start = perf_counter()
+
+    try:
+        for index, (stage_name, stage_fn) in enumerate(pipeline, start=1):
+            context = StageContext(name=stage_name, current=index, total=total_stages)
+            reporter.stage_start(context)
+            stage_start = perf_counter()
+            try:
+                metrics = stage_fn(config, reporter=reporter)
+                reporter.stage_complete(
+                    context,
+                    duration_seconds=perf_counter() - stage_start,
+                    metrics=metrics,
+                )
+            except Exception as error:
+                reporter.stage_failed(
+                    context,
+                    duration_seconds=perf_counter() - stage_start,
+                    error=error,
+                )
+                raise
+        reporter.pipeline_complete(duration_seconds=perf_counter() - pipeline_start)
+    except Exception as error:
+        reporter.pipeline_failed(
+            duration_seconds=perf_counter() - pipeline_start,
+            error=error,
+        )
+        raise
 
 
 if __name__ == "__main__":

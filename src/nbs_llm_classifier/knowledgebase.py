@@ -4,6 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from .config import AppConfig
+from .utils import ProgressReporter
 
 
 def _build_isco_frame(isco_xlsx: Path, q1_csv: Path) -> pd.DataFrame:
@@ -39,7 +40,7 @@ def _build_isco_frame(isco_xlsx: Path, q1_csv: Path) -> pd.DataFrame:
 
 def _build_isic_frame(isic_xlsx: Path, q1_csv: Path) -> pd.DataFrame:
     isic = pd.read_excel(isic_xlsx, sheet_name="ISIC_Rev_4", dtype=str)
-    isic["id"] = isic["4-digits "]
+    isic["id"] = isic["4-digits "].astype(str).str.zfill(4)
     text_cols = ["section_label", "division_label", "group_label", "description"]
     isic[text_cols] = isic[text_cols].fillna("")
     isic["text"] = isic[text_cols].agg(" ".join, axis=1).str.strip().str.lower()
@@ -56,7 +57,7 @@ def _build_isic_frame(isic_xlsx: Path, q1_csv: Path) -> pd.DataFrame:
         ],
         dtype=str,
     )
-    q1_isic["id"] = q1_isic["isic"].str.extract(r"(\d+)")
+    q1_isic["id"] = q1_isic["isic"].str.extract(r"(\d+)")[0].str.zfill(4)
     q1_isic["text"] = (
         q1_isic["activityname"].fillna("")
         + " "
@@ -68,11 +69,53 @@ def _build_isic_frame(isic_xlsx: Path, q1_csv: Path) -> pd.DataFrame:
     return kb_isic
 
 
-def build_knowledgebases(config: AppConfig) -> None:
+def build_knowledgebases(
+    config: AppConfig,
+    reporter: ProgressReporter | None = None,
+) -> dict[str, object]:
+    if reporter:
+        reporter.step(
+            stage="knowledgebase",
+            current=1,
+            total=4,
+            message="ensuring dictionary output directory",
+            level="verbose",
+        )
     config.paths.dictionaries_dir.mkdir(parents=True, exist_ok=True)
 
+    if reporter:
+        reporter.step(
+            stage="knowledgebase",
+            current=2,
+            total=4,
+            message="building ISCO dictionary",
+        )
     kb_isco = _build_isco_frame(config.paths.isco_xlsx, config.paths.nlfs_q1_csv)
     kb_isco.to_csv(config.paths.kb_isco_file, columns=["id", "text"], index=False)
 
+    if reporter:
+        reporter.step(
+            stage="knowledgebase",
+            current=3,
+            total=4,
+            message="building ISIC dictionary",
+        )
     kb_isic = _build_isic_frame(config.paths.isic_xlsx, config.paths.nlfs_q1_csv)
     kb_isic.to_csv(config.paths.kb_isic_file, columns=["id", "text"], index=False)
+
+    summary = {
+        "isco_rows": len(kb_isco),
+        "isic_rows": len(kb_isic),
+        "kb_isco_file": config.paths.kb_isco_file.name,
+        "kb_isic_file": config.paths.kb_isic_file.name,
+    }
+    if reporter:
+        reporter.step(
+            stage="knowledgebase",
+            current=4,
+            total=4,
+            message="knowledge base files written",
+            level="verbose",
+            metrics=summary,
+        )
+    return summary

@@ -7,12 +7,13 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 
 from .config import AppConfig
+from .utils import ProgressReporter
 
 
-def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> None:
-    accuracy = (search_results["prediction_1"] == search_results["validated"]).mean() * 100
+def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> float:
+    top1_accuracy = (search_results["pred1"] == search_results["prevalidated"]).mean() * 100
     print(
-        f"In {round(accuracy, 1)}% of cases the predicted code matched the validated code."
+        f"In {round(top1_accuracy, 1)}% of cases the predicted code matched the prevalidated code."
     )
 
     thresholds = np.arange(0, 1.05, 0.01)
@@ -21,8 +22,8 @@ def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> None:
     for threshold in thresholds:
         covered = search_results.loc[search_results["score"] > threshold]
         coverage = len(covered) / len(search_results)
-        accuracy = (covered["validated"] == covered["prediction_1"]).mean()
-        results.append({"threshold": threshold, "coverage": coverage, "accuracy": accuracy})
+        threshold_accuracy = (covered["prevalidated"] == covered["pred1"]).mean()
+        results.append({"threshold": threshold, "coverage": coverage, "accuracy": threshold_accuracy})
 
     results_df = pd.DataFrame(results)
 
@@ -72,29 +73,68 @@ def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> None:
     plt.gca().yaxis.tick_right()
     plt.gca().yaxis.set_label_position("right")
     plt.show()
+    return float(round(top1_accuracy, 2))
 
 
 def _coerce_results(search_results: pd.DataFrame) -> pd.DataFrame:
     coerced = search_results.copy()
-    coerced["prediction_1"] = coerced["prediction_1"].astype(str)
-    coerced["validated"] = coerced["validated"].astype(str)
+    coerced["pred1"] = coerced["pred1"].astype(str)
+    coerced["prevalidated"] = coerced["prevalidated"].astype(str)
     coerced["score"] = pd.to_numeric(coerced["score"], errors="coerce")
     return coerced
 
 
-def evaluate_search_results(config: AppConfig) -> None:
+def evaluate_search_results(
+    config: AppConfig,
+    reporter: ProgressReporter | None = None,
+) -> dict[str, object]:
+    if reporter:
+        reporter.step(
+            stage="evaluate",
+            current=1,
+            total=4,
+            message="loading ISCO search results",
+        )
     isco_results = _coerce_results(
         pd.read_csv(config.paths.search_results_isco_file)
     )
-    _evaluate_and_plot(
+    if reporter:
+        reporter.step(
+            stage="evaluate",
+            current=2,
+            total=4,
+            message="evaluating and plotting ISCO results",
+            metrics={"rows": len(isco_results)},
+        )
+    isco_top1 = _evaluate_and_plot(
         isco_results,
         f"ISCO Q2 2024 NLFS - ({config.model_name})",
     )
 
+    if reporter:
+        reporter.step(
+            stage="evaluate",
+            current=3,
+            total=4,
+            message="loading ISIC search results",
+        )
     isic_results = _coerce_results(
         pd.read_csv(config.paths.search_results_isic_file)
     )
-    _evaluate_and_plot(
+    if reporter:
+        reporter.step(
+            stage="evaluate",
+            current=4,
+            total=4,
+            message="evaluating and plotting ISIC results",
+            metrics={"rows": len(isic_results)},
+        )
+    isic_top1 = _evaluate_and_plot(
         isic_results,
         f"ISIC Q2 2024 NLFS - ({config.model_name})",
     )
+
+    return {
+        "isco_top1_pct": isco_top1,
+        "isic_top1_pct": isic_top1,
+    }
