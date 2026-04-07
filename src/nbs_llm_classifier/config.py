@@ -1,0 +1,83 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+import json
+from pathlib import Path
+
+
+@dataclass(frozen=True)
+class Paths:
+    data_dir: Path
+    raw_dir: Path
+    preprocessed_dir: Path
+    dictionaries_dir: Path
+    vector_store_dir: Path
+    isco_xlsx: Path
+    isic_xlsx: Path
+    nlfs_q1_csv: Path
+    nlfs_q2_csv: Path
+    query_isco_file: Path
+    query_isic_file: Path
+    search_results_isco_file: Path
+    search_results_isic_file: Path
+    kb_isco_file: Path
+    kb_isic_file: Path
+
+
+@dataclass(frozen=True)
+class AppConfig:
+    root_dir: Path
+    model_name: str
+    n_results: int
+    progress_verbosity: str
+    paths: Paths
+
+
+def _resolve_path(root_dir: Path, value: str) -> Path:
+    return (root_dir / value).resolve()
+
+
+def load_config(config_path: Path) -> AppConfig:
+    config_path = config_path.resolve()
+    with config_path.open("r", encoding="utf-8") as file_obj:
+        data = json.load(file_obj)
+
+    path_data = data.get("paths", {})
+    root_dir = config_path.parent
+
+    def resolve(key: str, default: str) -> Path:
+        return _resolve_path(root_dir, path_data.get(key, default))
+
+    paths = Paths(
+        data_dir=resolve("data_dir", "data"),
+        raw_dir=resolve("raw_dir", "data/raw"),
+        preprocessed_dir=resolve("preprocessed_dir", "data/pre-processed"),
+        dictionaries_dir=resolve("dictionaries_dir", "data/dictionaries"),
+        vector_store_dir=resolve("vector_store_dir", "vector_store"),
+        isco_xlsx=resolve("isco_xlsx", "data/raw/ISCO.xlsx"),
+        isic_xlsx=resolve("isic_xlsx", "data/raw/ISIC.xlsx"),
+        nlfs_q1_csv=resolve("nlfs_q1_csv", "data/pre-processed/NLFS_2024Q1.csv"),
+        nlfs_q2_csv=resolve("nlfs_q2_csv", "data/pre-processed/NLFS_2024Q2.csv"),
+        query_isco_file=resolve("query_isco_file", "data/query_isco.csv"),
+        query_isic_file=resolve("query_isic_file", "data/query_isic.csv"),
+        search_results_isco_file=resolve(
+            "search_results_isco_file", "data/search_results_isco.csv"
+        ),
+        search_results_isic_file=resolve(
+            "search_results_isic_file", "data/search_results_isic.csv"
+        ),
+        kb_isco_file=resolve("kb_isco_file", "data/dictionaries/kb_isco.csv"),
+        kb_isic_file=resolve("kb_isic_file", "data/dictionaries/kb_isic.csv"),
+    )
+
+    model_name = data.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
+    n_results = int(data.get("n_results", 15))
+    progress_verbosity = str(data.get("progress_verbosity", "normal")).lower()
+
+    return AppConfig(
+        root_dir=root_dir,
+        model_name=model_name,
+        n_results=n_results,
+        progress_verbosity=progress_verbosity,
+        paths=paths,
+    )
