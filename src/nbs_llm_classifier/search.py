@@ -13,30 +13,30 @@ from .vectorstore import create_vectoriser
 
 def _combine_ranked_results(search_results: pd.DataFrame) -> pd.DataFrame:
     scores = (
-        search_results[["query_id", "doc_id", "score"]]
-        .groupby(["query_id", "doc_id"])["score"]
+        search_results[["query_id", "doc_label", "score"]]
+        .groupby(["query_id", "doc_label"])["score"]
         .max()
         .reset_index()
     )
 
     unique = (
-        search_results[["query_id", "doc_id"]]
-        .groupby(["query_id"])["doc_id"]
+        search_results[["query_id", "doc_label"]]
+        .groupby(["query_id"])["doc_label"]
         .value_counts()
         .reset_index()
         .drop(columns=["count"])
     )
-    unique = unique.merge(scores, on=["query_id", "doc_id"], how="left")
+    unique = unique.merge(scores, on=["query_id", "doc_label"], how="left")
     unique["rank"] = unique.groupby("query_id").cumcount()
 
     combined = (
         unique[unique["rank"] == 0]
-        .rename(columns={"doc_id": "pred1"})
+        .rename(columns={"doc_label": "pred1"})
         .loc[:, ["query_id", "pred1", "score"]]
     )
 
     for rank, name in [(1, "pred2"), (2, "pred3")]:
-        ranked = unique[unique["rank"] == rank].rename(columns={"doc_id": name})
+        ranked = unique[unique["rank"] == rank].rename(columns={"doc_label": name})
         combined = combined.merge(ranked[["query_id", name]], on="query_id", how="left")
 
     combined["pred1"] = combined["pred1"].astype(str)
