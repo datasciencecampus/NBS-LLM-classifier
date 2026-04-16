@@ -84,8 +84,8 @@ The ISCO and ISIC classification schemes are combined with 4-digit coded occupat
 |`isco_query` |local government driver transporting clients from one destination to another, transporting goods |
 |`isco_prevalidated`|8322 |
 |`isco_pred1` |8322 |
-|`isco_pred1_score` |0.828753829 |
 |`isco_pred1_label` |8322 Car, Taxi and Van Drivers |
+|`isco_pred1_score` |0.828753829 |
 |`isco_match_top_1` |TRUE |
 |`isco_pred2` |8331 | 
 |`isco_pred2_label` |8331 Bus and Tram Drivers |
@@ -95,8 +95,8 @@ The ISCO and ISIC classification schemes are combined with 4-digit coded occupat
 |`isic_query` |filling and keeping record, answering phone calls, welcoming and graeting guests, purchase tools and materials answering and directing phone calls, managing offices resources and supplies and filling |
 |`isic_prevalidated` |8411 |
 |`isic_pred1` |5510 | 
-|`isic_pred1_score` |0.65932399 |
 |`isic_pred1_label` |5510 Short term accommodation activities |
+|`isic_pred1_score` |0.65932399 |
 |`isic_match_top_1` |FALSE |
 |`isic_pred2` |8211 | 
 |`isic_pred2_label` |8211 Combined office administrative service activities |
