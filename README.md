@@ -74,13 +74,36 @@ style manual color:#2121,fill-opacity:0,stroke-width:0px
 
 The ISCO and ISIC classification schemes are combined with 4-digit coded occupations and economic activities from the Nigeria Labour Force Survey (NLFS) to create a knowledgebase. These labelled examples are embedded as vectors and saved alongside the original free text as a VectorStore object. The transformation of text into numerical representations is handled by a vectoriser model. Query data from a different wave of the NLFS is also embedded as a vector and searched against the labelled examples in the VectorStore. The semantic similarity or distance between each vector query and knowledgebase entry is then calculated. The nearest N labelled examples are returned with their distance. <br />
 
-**Example output** <br />
+**Example output (in long format for readability)** <br />
 
-|`query_id` |`query_text` |`pre_validated` |`pred1` |`score` |`pred2` |`pred3` |`match_top_1` |   
-|:--- |:--- |:--- |:--- |:--- |:--- |:--- |:--- |
-|2855 | trader selling of charcoal |5211 |5211 Stall and Market Salespersons |0.9694552 |9520 Street Vendors (excluding Food)| NA | True |
+|Variable |Example value |
+|:-----|:-----|
+|`id`|00090a7060624433b7b8f9edf3490878111 |
+|`job_number` |1 |
+|`isco_query_id` |00090a7060624433b7b8f9edf3490878111 |
+|`isco_query` |local government driver transporting clients from one destination to another, transporting goods |
+|`isco_prevalidated`|8322 |
+|`isco_pred1` |8322 |
+|`isco_pred1_score` |0.828753829 |
+|`isco_pred1_label` |8322 Car, Taxi and Van Drivers |
+|`isco_match_top_1` |TRUE |
+|`isco_pred2` |8331 | 
+|`isco_pred2_label` |8331 Bus and Tram Drivers |
+|`isco_pred3` |8321 | 
+|`isco_pred3_label` |8321 Motorcycle Drivers|
+|`isic_query_id` |00090a7060624433b7b8f9edf3490878111 | 
+|`isic_query` |filling and keeping record, answering phone calls, welcoming and graeting guests, purchase tools and materials answering and directing phone calls, managing offices resources and supplies and filling |
+|`isic_prevalidated` |8411 |
+|`isic_pred1` |5510 | 
+|`isic_pred1_score` |0.65932399 |
+|`isic_pred1_label` |5510 Short term accommodation activities |
+|`isic_match_top_1` |FALSE |
+|`isic_pred2` |8211 | 
+|`isic_pred2_label` |8211 Combined office administrative service activities |
+|`isic_pred3` |5610 |
+|`isic_pred3_label` |5610 Restaurants and mobile food service activities |
 
- <br />If the top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
+<br />If the top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
 
 ## Usage
 
