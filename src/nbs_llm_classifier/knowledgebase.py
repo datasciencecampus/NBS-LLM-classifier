@@ -18,7 +18,7 @@ def _build_isco_frame(isco_xlsx: Path, q1_csv: Path) -> pd.DataFrame:
     q1_isco = pd.read_csv(
         q1_csv,
         usecols=[
-            "interview_key",
+            "interview_id",
             "jobnumber",
             "occupationname",
             "occupationtasksduties",
@@ -49,7 +49,7 @@ def _build_isic_frame(isic_xlsx: Path, q1_csv: Path) -> pd.DataFrame:
     q1_isic = pd.read_csv(
         q1_csv,
         usecols=[
-            "interview_key",
+            "interview_id",
             "jobnumber",
             "activityname",
             "activitygoodsservices",

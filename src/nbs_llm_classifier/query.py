@@ -18,7 +18,8 @@ def build_queries(
             message="loading Q2 pre-processed data",
         )
     q2 = pd.read_csv(config.paths.nlfs_q2_csv, dtype=str)
-    q2 = q2.assign(id=range(len(q2)))
+    if "id" not in q2.columns:
+        q2 = q2.assign(id=range(len(q2)))
 
     if reporter:
         reporter.step(

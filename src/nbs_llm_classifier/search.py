@@ -227,6 +227,67 @@ def _combine_search_outputs(
         suffixes=("_isco", "_isic"),
         how="outer",
     )
+    
+    rename_map = {
+        "id": "id",
+        "jobnumber": "job_number",
+        "query_id_isco": "isco_query_id",
+        "query_isco": "isco_query",
+        "prevalidated_isco": "isco_prevalidated",
+        "pred1_isco": "isco_pred1",
+        "score_isco": "isco_pred1_score",
+        "pred1label_isco": "isco_pred1_label",
+        "pred2_isco": "isco_pred2",
+        "pred2label_isco": "isco_pred2_label",
+        "pred3_isco": "isco_pred3",
+        "pred3label_isco": "isco_pred3_label",
+        "match_top_1_isco": "isco_match_top_1",
+        "query_id_isic": "isic_query_id",
+        "query_isic": "isic_query",
+        "prevalidated_isic": "isic_prevalidated",
+        "pred1_isic": "isic_pred1",
+        "score_isic": "isic_pred1_score",
+        "pred1label_isic": "isic_pred1_label",
+        "pred2_isic": "isic_pred2",
+        "pred2label_isic": "isic_pred2_label",
+        "pred3_isic": "isic_pred3",
+        "pred3label_isic": "isic_pred3_label",
+        "match_top_1_isic": "isic_match_top_1",
+    }
+    combined = combined.rename(
+        columns={key: value for key, value in rename_map.items() if key in combined.columns}
+    )
+
+    ordered_columns = [
+        "id",
+        "job_number",
+        "isco_query_id",
+        "isco_query",
+        "isco_prevalidated",
+        "isco_pred1",
+        "isco_pred1_label",
+        "isco_pred1_score",
+        "isco_match_top_1",
+        "isco_pred2",
+        "isco_pred2_label",
+        "isco_pred3",
+        "isco_pred3_label",
+        "isic_query_id",
+        "isic_query",
+        "isic_prevalidated",
+        "isic_pred1",
+        "isic_pred1_label",
+        "isic_pred1_score",
+        "isic_match_top_1",
+        "isic_pred2",
+        "isic_pred2_label",
+        "isic_pred3",
+        "isic_pred3_label",
+    ]
+    selected = [column for column in ordered_columns if column in combined.columns]
+    extras = [column for column in combined.columns if column not in selected]
+    combined = combined[selected + extras]
+
     combined.to_csv(output_file, index=False)
 
 
