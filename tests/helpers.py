@@ -9,15 +9,17 @@ from nbs_llm_classifier.config import AppConfig, Paths
 
 def make_app_config(tmp_path: Path, include_outputs_dir: bool = True) -> AppConfig:
     data_dir = tmp_path / "data"
-    raw_dir = data_dir / "raw"
-    preprocessed_dir = data_dir / "pre-processed"
-    dictionaries_dir = data_dir / "dictionaries"
+    raw_dir = data_dir / "input"
+    preprocessed_dir = data_dir / "input"
+    dictionaries_dir = data_dir / "knowledgebase"
+    query_dir = data_dir / "query"
     vector_store_dir = tmp_path / "vector_store"
     outputs_dir = tmp_path / "outputs"
 
     raw_dir.mkdir(parents=True, exist_ok=True)
     preprocessed_dir.mkdir(parents=True, exist_ok=True)
     dictionaries_dir.mkdir(parents=True, exist_ok=True)
+    query_dir.mkdir(parents=True, exist_ok=True)
     vector_store_dir.mkdir(parents=True, exist_ok=True)
     if include_outputs_dir:
         outputs_dir.mkdir(parents=True, exist_ok=True)
@@ -32,8 +34,8 @@ def make_app_config(tmp_path: Path, include_outputs_dir: bool = True) -> AppConf
         isic_xlsx=raw_dir / "ISIC.xlsx",
         nlfs_q1_csv=preprocessed_dir / "NLFS_2024Q1.csv",
         nlfs_q2_csv=preprocessed_dir / "NLFS_2024Q2.csv",
-        query_isco_file=data_dir / "query_isco.csv",
-        query_isic_file=data_dir / "query_isic.csv",
+        query_isco_file=query_dir / "query_isco.csv",
+        query_isic_file=query_dir / "query_isic.csv",
         search_results_isco_file=outputs_dir / "search_results_isco.csv",
         search_results_isic_file=outputs_dir / "search_results_isic.csv",
         kb_isco_file=dictionaries_dir / "kb_isco.csv",

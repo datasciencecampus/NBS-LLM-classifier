@@ -28,6 +28,7 @@ def build_queries(
             total=4,
             message="building ISCO query file",
         )
+    config.paths.query_isco_file.parent.mkdir(parents=True, exist_ok=True)
     query_isco = q2.copy()
     query_isco["query"] = (
         query_isco["occupationname"].fillna("")
@@ -48,6 +49,7 @@ def build_queries(
             total=4,
             message="building ISIC query file",
         )
+    config.paths.query_isic_file.parent.mkdir(parents=True, exist_ok=True)
     query_isic = q2.copy()
     query_isic["query"] = (
         query_isic["activityname"].fillna("")

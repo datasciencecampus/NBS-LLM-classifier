@@ -50,24 +50,24 @@ def load_config(config_path: Path) -> AppConfig:
 
     paths = Paths(
         data_dir=resolve("data_dir", "data"),
-        raw_dir=resolve("raw_dir", "data/raw"),
-        preprocessed_dir=resolve("preprocessed_dir", "data/pre-processed"),
-        dictionaries_dir=resolve("dictionaries_dir", "data/dictionaries"),
+        raw_dir=resolve("raw_dir", "data/input"),
+        preprocessed_dir=resolve("preprocessed_dir", "data/input"),
+        dictionaries_dir=resolve("dictionaries_dir", "data/knowledgebase"),
         vector_store_dir=resolve("vector_store_dir", "vector_store"),
-        isco_xlsx=resolve("isco_xlsx", "data/raw/ISCO.xlsx"),
-        isic_xlsx=resolve("isic_xlsx", "data/raw/ISIC.xlsx"),
-        nlfs_q1_csv=resolve("nlfs_q1_csv", "data/pre-processed/NLFS_2024Q1.csv"),
-        nlfs_q2_csv=resolve("nlfs_q2_csv", "data/pre-processed/NLFS_2024Q2.csv"),
-        query_isco_file=resolve("query_isco_file", "data/query_isco.csv"),
-        query_isic_file=resolve("query_isic_file", "data/query_isic.csv"),
+        isco_xlsx=resolve("isco_xlsx", "data/input/ISCO.xlsx"),
+        isic_xlsx=resolve("isic_xlsx", "data/input/ISIC.xlsx"),
+        nlfs_q1_csv=resolve("nlfs_q1_csv", "data/input/NLFS_2024Q1.csv"),
+        nlfs_q2_csv=resolve("nlfs_q2_csv", "data/input/NLFS_2024Q2.csv"),
+        query_isco_file=resolve("query_isco_file", "data/query/query_isco.csv"),
+        query_isic_file=resolve("query_isic_file", "data/query/query_isic.csv"),
         search_results_isco_file=resolve(
             "search_results_isco_file", "data/search_results_isco.csv"
         ),
         search_results_isic_file=resolve(
             "search_results_isic_file", "data/search_results_isic.csv"
         ),
-        kb_isco_file=resolve("kb_isco_file", "data/dictionaries/kb_isco.csv"),
-        kb_isic_file=resolve("kb_isic_file", "data/dictionaries/kb_isic.csv"),
+        kb_isco_file=resolve("kb_isco_file", "data/knowledgebase/kb_isco.csv"),
+        kb_isic_file=resolve("kb_isic_file", "data/knowledgebase/kb_isic.csv"),
     )
 
     model_name = data.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
