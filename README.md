@@ -92,7 +92,7 @@ The NBS LLM Classifier pipeline will output the following columns in `.csv` form
 |`isco_pred1` |Top-1 4-digit ISCO prediction |8322 |
 |`isco_pred1_label` |Top-1 4-digit ISCO prediction with label|8322 Car, Taxi and Van Drivers |
 |`isco_pred1_score` |Top-1 4-digit ISCO prediction similarity score |0.828753829 |
-|`isco_match_top_1` |Top-1 4-digit ISCO matches pre-validated code |TRUE |
+|`isco_match_top_1` |Top-1 4-digit ISCO prediction matches pre-validated code |TRUE |
 |`isco_pred2` |Top-2 4-digit ISCO prediction |8331 | 
 |`isco_pred2_label` |Top-2 4-digit ISCO prediction with label |8331 Bus and Tram Drivers |
 |`isco_pred3` |Top-3 4-digit ISCO prediction |8321 | 
@@ -103,10 +103,10 @@ The NBS LLM Classifier pipeline will output the following columns in `.csv` form
 |`isic_pred1` |Top-1 4-digit ISIC prediction |5510 | 
 |`isic_pred1_label` |Top-1 4-digit ISIC prediction with label |5510 Short term accommodation activities |
 |`isic_pred1_score` |Top-1 4-digit ISIC prediction similarity score |0.65932399 |
-|`isic_match_top_1` |Top-1 4-digit ISIC matches pre-validated code |FALSE |
+|`isic_match_top_1` |Top-1 4-digit ISIC prediction matches pre-validated code |FALSE |
 |`isic_pred2` |Top-2 4-digit ISIC prediction |8211 | 
 |`isic_pred2_label` |Top-2 4-digit ISIC prediction with label |8211 Combined office administrative service activities |
-|`isic_pred3` |Top-3 4-digit ISIC prediction with label |5610 |
+|`isic_pred3` |Top-3 4-digit ISIC prediction |5610 |
 |`isic_pred3_label` |Top-3 4-digit ISIC prediction with label |5610 Restaurants and mobile food service activities |
 
 <br />If the Top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the Top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
