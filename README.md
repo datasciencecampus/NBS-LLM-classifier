@@ -30,14 +30,8 @@ pip install -r requirements.txt
 ├── data/
 |   └── input                    # ISCO/ISIC coding schemes and NLFS survey data
 ├── demo/                        # Example workflow
-<<<<<<< issue-6-python-lint-format-hooks
-|   └── data/
-│       ├── pre-processed
-│       └── raw
-=======
 |   └── data/ 
 │       └── input   
->>>>>>> main
 ├── docs/                        # Additional documentation
 ├── outputs/                     # Search results
 ├── src/                         # Source code
@@ -54,33 +48,6 @@ pip install -r requirements.txt
 ├── requirements.txt             # ClassifAI package and dependencies
 ```
 
-<<<<<<< issue-6-python-lint-format-hooks
-## Installation
-
-**1. Clone the repository**
-
-```bash
-git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
-cd NBS-LLM-classifier
-```
-
-**2. Set up virtual environment**
-A *virtual environment* allows you to manage the installation and updating of Python packages that are needed for your project without interfering with packages used by the system or by other projects.
-
-Create the virtual environment and then activate it.
-```bash
-python -m venv venv
-venv\Scripts\activate.bat # on Windows
-source venv/bin/activate # on a Mac
-```
-
-**3. Install the required dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-=======
->>>>>>> main
 ## Workflow
 ```mermaid
 flowchart TB
@@ -101,40 +68,6 @@ end
 style manual color:#2121,fill-opacity:0,stroke-width:0px
 ```
 
-<<<<<<< issue-6-python-lint-format-hooks
-The ISCO and ISIC classification schemes are combined with 4-digit coded occupations and economic activities from the Nigeria Labour Force Survey (NLFS) to create a knowledgebase. These labelled examples are embedded as vectors and saved alongside the original free text as a VectorStore object. The transformation of text into numerical representations is handled by a vectoriser model. Query data from a different wave of the NLFS is also embedded as a vector and searched against the labelled examples in the VectorStore. The semantic similarity or distance between each vector query and knowledgebase entry is then calculated. The nearest N labelled examples are returned with their distance. <br />
-
-**Example output (in long format for readability)** <br />
-
-|Variable |Example value |
-|:-----|:-----|
-|`id`|00090a7060624433b7b8f9edf3490878111 |
-|`job_number` |1 |
-|`isco_query_id` |00090a7060624433b7b8f9edf3490878111 |
-|`isco_query` |local government driver transporting clients from one destination to another, transporting goods |
-|`isco_prevalidated`|8322 |
-|`isco_pred1` |8322 |
-|`isco_pred1_label` |8322 Car, Taxi and Van Drivers |
-|`isco_pred1_score` |0.828753829 |
-|`isco_match_top_1` |TRUE |
-|`isco_pred2` |8331 |
-|`isco_pred2_label` |8331 Bus and Tram Drivers |
-|`isco_pred3` |8321 |
-|`isco_pred3_label` |8321 Motorcycle Drivers|
-|`isic_query_id` |00090a7060624433b7b8f9edf3490878111 |
-|`isic_query` |filling and keeping record, answering phone calls, welcoming and graeting guests, purchase tools and materials answering and directing phone calls, managing offices resources and supplies and filling |
-|`isic_prevalidated` |8411 |
-|`isic_pred1` |5510 |
-|`isic_pred1_label` |5510 Short term accommodation activities |
-|`isic_pred1_score` |0.65932399 |
-|`isic_match_top_1` |FALSE |
-|`isic_pred2` |8211 |
-|`isic_pred2_label` |8211 Combined office administrative service activities |
-|`isic_pred3` |5610 |
-|`isic_pred3_label` |5610 Restaurants and mobile food service activities |
-
-<br />If the top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
-=======
 1. The ISCO and ISIC classification schemes are combined with 4-digit coded occupations and economic activities from the Nigeria Labour Force Survey (NLFS) to create a knowledgebase.
 2. These labelled examples are embedded as vectors and saved alongside the original free text as a VectorStore object. The transformation of text into numerical representations is handled by a vectoriser model. 
 3. Query data from a different wave of the NLFS is also embedded as a vector and searched against the labelled examples in the VectorStore. 
@@ -177,7 +110,6 @@ The NBS LLM Classifier pipeline will output the following columns in `.csv` form
 |`isic_pred3_label` |Top-3 4-digit ISIC prediction with label |5610 Restaurants and mobile food service activities |
 
 <br />If the Top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the Top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
->>>>>>> main
 
 ## Usage
 1. Save knowledgebase (`ISCO.xlsx`; `ISIC.xlsx` and validated NLFS survey data) and input query (pre-validated NLFS survey data) in the `data/input` folder.
