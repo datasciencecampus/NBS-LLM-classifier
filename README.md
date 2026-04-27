@@ -3,15 +3,35 @@
 # ✨ NBS LLM Classifier ✨
 This is an implementation of the [ClassifAI](https://datasciencecampus.github.io/classifai/) Python package that supports the semi-automatic classification of free text responses in the [NBS](https://nigerianstat.gov.ng/) Labour Force Survey to [ISCO](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-occupation/) and [ISIC](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-economic-activities/) coding schemes.
 
-## Folder Structure
+## Getting started
+
+**1. Clone the repository**    
+Open a terminal (Command Prompt) and run:
+```bash
+git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
+cd NBS-LLM-classifier
+```
+
+**2. Set up your environment**    
+Create and activate a virtual environment
+```bash
+python -m venv venv
+venv\Scripts\activate.bat # on Windows
+source venv/bin/activate # on a Mac
+```
+
+Install the required dependencies    
+```bash
+pip install -r requirements.txt
+```
+
+## Repository structure
 ```
 ├── data/
-│   ├── pre-processed            # NLFS survey data
-|   └── raw                      # ISCO/ISIC coding schemes
+|   └── input                    # ISCO/ISIC coding schemes and NLFS survey data
 ├── demo/                        # Example workflow
 |   └── data/ 
-│       ├── pre-processed
-│       └── raw   
+│       └── input   
 ├── docs/                        # Additional documentation
 ├── outputs/                     # Search results
 ├── src/                         # Source code
@@ -26,30 +46,6 @@ This is an implementation of the [ClassifAI](https://datasciencecampus.github.io
 ├── tests/                       # All tests (unit, integration, and end-to-end)
 ├── config.json                  # Pipeline settings and parameters
 ├── requirements.txt             # ClassifAI package and dependencies
-```
-
-## Installation
-
-**1. Clone the repository**    
-
-```bash
-git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
-cd NBS-LLM-classifier
-```
-
-**2. Set up virtual environment**    
-A *virtual environment* allows you to manage the installation and updating of Python packages that are needed for your project without interfering with packages used by the system or by other projects.
-
-Create the virtual environment and then activate it.
-```bash
-python -m venv venv
-venv\Scripts\activate.bat # on Windows
-source venv/bin/activate # on a Mac
-```
-
-**3. Install the required dependencies**    
-```bash
-pip install -r requirements.txt
 ```
 
 ## Workflow
@@ -72,9 +68,19 @@ end
 style manual color:#2121,fill-opacity:0,stroke-width:0px
 ```
 
-The ISCO and ISIC classification schemes are combined with 4-digit coded occupations and economic activities from the Nigeria Labour Force Survey (NLFS) to create a knowledgebase. These labelled examples are embedded as vectors and saved alongside the original free text as a VectorStore object. The transformation of text into numerical representations is handled by a vectoriser model. Query data from a different wave of the NLFS is also embedded as a vector and searched against the labelled examples in the VectorStore. The semantic similarity or distance between each vector query and knowledgebase entry is then calculated. The nearest N labelled examples are returned with their distance. <br />
+1. The ISCO and ISIC classification schemes are combined with 4-digit coded occupations and economic activities from the Nigeria Labour Force Survey (NLFS) to create a knowledgebase.
+2. These labelled examples are embedded as vectors and saved alongside the original free text as a VectorStore object. The transformation of text into numerical representations is handled by a vectoriser model. 
+3. Query data from a different wave of the NLFS is also embedded as a vector and searched against the labelled examples in the VectorStore. 
+4. The semantic similarity or distance between each vector query and knowledgebase entry is then calculated. 
+5. The nearest N labelled examples are returned with their distance. <br />
 
-**Example output (in long format for readability)** <br />
+## Input and outputs
+
+### Inputs
+The NLFS survey data needs to contain the following columns: ['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']. `id` is a unique id that concatenates `interview_id`, `hhnumber`, `hhroster_id` and `jobnumber`.
+
+### Outputs
+The NBS LLM Classifier pipeline will output the following columns in `.csv` format.
 
 |Variable |Example value |
 |:-----|:-----|
@@ -106,9 +112,28 @@ The ISCO and ISIC classification schemes are combined with 4-digit coded occupat
 <br />If the top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
 
 ## Usage
-
-1. Save knowledgebase (ISCO/ISIC coding schemes and manually labelled examples) and input query in `data/` subfolders.
+1. Save knowledgebase (`ISCO.xlsx`; `ISIC.xlsx` and validated NLFS survey data) and input query (pre-validated NLFS survey data) in the `data/input` folder.
 2. Check `config.json` includes appropriate LLM encoder model and points to the correct file paths.
+
+**`config.json` schema** <br />
+
+|Field |Description |Type |
+|:----|:----|:----|
+|"data_dir"	|All datasets |Folder |
+|"input_dir" |Classifications schemes and validated survery responses |Folder |
+|"kb_dir" |Knowledgebase |Folder |
+|"vector_store_dir" |Vector store |Folder |
+|"isco_xlsx" |ISCO classification scheme |`.xlsx` |
+|"isic_xlsx" |ISIC classification scheme |`.xlsx` |
+|"nlfs_validated_csv" |Validated NLFS survey responses |`.csv` |
+|"nlfs_prevalidated_csv" |Pre-validated NLFS survey responses |`.csv` |
+|"query_isco_file" |ISCO query |`.csv` |
+|"query_isic_file" |ISIC query |`.csv` |
+|"search_results_isco_file" |ISCO search results |`.csv` |
+|"search_results_isic_file" |ISIC search results |`.csv` |
+|"kb_isco_file" |ISCO knowledgebase |`.csv` |
+|"kb_isic_file" |ISIC knowledgebase |`.csv` |
+
 3. Run `src/main.py` in the command-line interface.
 
 ```bash
