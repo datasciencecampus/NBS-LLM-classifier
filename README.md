@@ -82,34 +82,34 @@ The NLFS survey data needs to contain the following columns: ['id','interview_id
 ### Outputs
 The NBS LLM Classifier pipeline will output the following columns in `.csv` format.
 
-|Variable |Example value |
-|:-----|:-----|
-|`id`|00090a7060624433b7b8f9edf3490878111 |
-|`job_number` |1 |
-|`isco_query_id` |00090a7060624433b7b8f9edf3490878111 |
-|`isco_query` |local government driver transporting clients from one destination to another, transporting goods |
-|`isco_prevalidated`|8322 |
-|`isco_pred1` |8322 |
-|`isco_pred1_label` |8322 Car, Taxi and Van Drivers |
-|`isco_pred1_score` |0.828753829 |
-|`isco_match_top_1` |TRUE |
-|`isco_pred2` |8331 | 
-|`isco_pred2_label` |8331 Bus and Tram Drivers |
-|`isco_pred3` |8321 | 
-|`isco_pred3_label` |8321 Motorcycle Drivers|
+|Variable |Description |Example value |
+|:-----|:-----|:-----|
+|`id`|Joining variable |00090a7060624433b7b8f9edf3490878111 |
+|`job_number` |Multiple job holders |1 |
+|`isco_query_id` |Joining variable |00090a7060624433b7b8f9edf3490878111 |
+|`isco_query` |Job title and description|local government driver transporting clients from one destination to another, transporting goods |
+|`isco_prevalidated`|Field interviewer recorded 4-digit ISCO code |8322 |
+|`isco_pred1` |Top-1 4-digit ISCO prediction |8322 |
+|`isco_pred1_label` |Top-1 4-digit ISCO prediction with label|8322 Car, Taxi and Van Drivers |
+|`isco_pred1_score` |Top-1 4-digit ISCO prediction similarity score |0.828753829 |
+|`isco_match_top_1` |Top-1 4-digit ISCO matches pre-validated code |TRUE |
+|`isco_pred2` |Top-2 4-digit ISCO prediction |8331 | 
+|`isco_pred2_label` |Top-2 4-digit ISCO prediction with label |8331 Bus and Tram Drivers |
+|`isco_pred3` |Top-3 4-digit ISCO prediction |8321 | 
+|`isco_pred3_label` |Top-3 4-digit ISCO prediction |8321 Motorcycle Drivers|
 |`isic_query_id` |00090a7060624433b7b8f9edf3490878111 | 
 |`isic_query` |filling and keeping record, answering phone calls, welcoming and graeting guests, purchase tools and materials answering and directing phone calls, managing offices resources and supplies and filling |
-|`isic_prevalidated` |8411 |
-|`isic_pred1` |5510 | 
-|`isic_pred1_label` |5510 Short term accommodation activities |
-|`isic_pred1_score` |0.65932399 |
-|`isic_match_top_1` |FALSE |
-|`isic_pred2` |8211 | 
-|`isic_pred2_label` |8211 Combined office administrative service activities |
-|`isic_pred3` |5610 |
-|`isic_pred3_label` |5610 Restaurants and mobile food service activities |
+|`isic_prevalidated` |Field interviewer recorded 4-digit ISIC code |8411 |
+|`isic_pred1` |Top-1 4-digit ISIC prediction |5510 | 
+|`isic_pred1_label` |Top-1 4-digit ISIC prediction with label |5510 Short term accommodation activities |
+|`isic_pred1_score` |Top-1 4-digit ISIC prediction similarity score |0.65932399 |
+|`isic_match_top_1` |Top-1 4-digit ISIC matches pre-validated code |FALSE |
+|`isic_pred2` |Top-2 4-digit ISIC prediction |8211 | 
+|`isic_pred2_label` |Top-2 4-digit ISIC prediction with label |8211 Combined office administrative service activities |
+|`isic_pred3` |Top-3 4-digit ISIC prediction with label |5610 |
+|`isic_pred3_label` |Top-3 4-digit ISIC prediction with label |5610 Restaurants and mobile food service activities |
 
-<br />If the top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
+<br />If the Top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the Top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
 
 ## Usage
 1. Save knowledgebase (`ISCO.xlsx`; `ISIC.xlsx` and validated NLFS survey data) and input query (pre-validated NLFS survey data) in the `data/input` folder.
