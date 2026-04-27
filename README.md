@@ -87,7 +87,7 @@ The NBS LLM Classifier pipeline will output the following columns in `.csv` form
 |`id`|Joining variable |00090a7060624433b7b8f9edf3490878111 |
 |`job_number` |Multiple job holders |1 |
 |`isco_query_id` |Joining variable |00090a7060624433b7b8f9edf3490878111 |
-|`isco_query` |Job title and description|local government driver transporting clients from one destination to another, transporting goods |
+|`isco_query` |Occupation |local government driver transporting clients from one destination to another, transporting goods |
 |`isco_prevalidated`|Field interviewer recorded 4-digit ISCO code |8322 |
 |`isco_pred1` |Top-1 4-digit ISCO prediction |8322 |
 |`isco_pred1_label` |Top-1 4-digit ISCO prediction with label|8322 Car, Taxi and Van Drivers |
@@ -97,8 +97,8 @@ The NBS LLM Classifier pipeline will output the following columns in `.csv` form
 |`isco_pred2_label` |Top-2 4-digit ISCO prediction with label |8331 Bus and Tram Drivers |
 |`isco_pred3` |Top-3 4-digit ISCO prediction |8321 | 
 |`isco_pred3_label` |Top-3 4-digit ISCO prediction |8321 Motorcycle Drivers|
-|`isic_query_id` |00090a7060624433b7b8f9edf3490878111 | 
-|`isic_query` |filling and keeping record, answering phone calls, welcoming and graeting guests, purchase tools and materials answering and directing phone calls, managing offices resources and supplies and filling |
+|`isic_query_id` |Joining variable |00090a7060624433b7b8f9edf3490878111 | 
+|`isic_query` |Economic activity |filling and keeping record, answering phone calls, welcoming and graeting guests, purchase tools and materials answering and directing phone calls, managing offices resources and supplies and filling |
 |`isic_prevalidated` |Field interviewer recorded 4-digit ISIC code |8411 |
 |`isic_pred1` |Top-1 4-digit ISIC prediction |5510 | 
 |`isic_pred1_label` |Top-1 4-digit ISIC prediction with label |5510 Short term accommodation activities |
