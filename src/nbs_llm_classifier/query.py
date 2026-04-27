@@ -35,10 +35,14 @@ def build_queries(
     config.paths.query_isco_file.parent.mkdir(parents=True, exist_ok=True)
     query_isco = prevalidated_data.copy()
     query_isco["query"] = (
-        query_isco["occupationname"].fillna("")
-        + " "
-        + query_isco["occupationtasksduties"].fillna("")
-    ).str.strip().str.lower()
+        (
+            query_isco["occupationname"].fillna("")
+            + " "
+            + query_isco["occupationtasksduties"].fillna("")
+        )
+        .str.strip()
+        .str.lower()
+    )
     query_isco["prevalidated"] = query_isco["isco"].str.extract(r"(\d+)")
     query_isco.to_csv(
         config.paths.query_isco_file,
@@ -56,10 +60,14 @@ def build_queries(
     config.paths.query_isic_file.parent.mkdir(parents=True, exist_ok=True)
     query_isic = prevalidated_data.copy()
     query_isic["query"] = (
-        query_isic["activityname"].fillna("")
-        + " "
-        + query_isic["activitygoodsservices"].fillna("")
-    ).str.strip().str.lower()
+        (
+            query_isic["activityname"].fillna("")
+            + " "
+            + query_isic["activitygoodsservices"].fillna("")
+        )
+        .str.strip()
+        .str.lower()
+    )
     query_isic["prevalidated"] = query_isic["isic"].str.extract(r"(\d+)")
     query_isic.to_csv(
         config.paths.query_isic_file,

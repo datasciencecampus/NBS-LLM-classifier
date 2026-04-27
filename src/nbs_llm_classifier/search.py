@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-import pandas as pd
 
+import pandas as pd
 from classifai.indexers import VectorStore
 from classifai.indexers.dataclasses import VectorStoreSearchInput
 
@@ -69,9 +69,7 @@ def _run_search(
         )
     search_terms = pd.read_csv(query_file, dtype=str)
     if not {"id", "query", "prevalidated"}.issubset(search_terms.columns):
-        raise ValueError(
-            "Query file must contain id, query, and prevalidated columns."
-        )
+        raise ValueError("Query file must contain id, query, and prevalidated columns.")
     search_input = VectorStoreSearchInput(
         {"id": search_terms["id"].to_list(), "query": search_terms["query"].to_list()}
     )
@@ -234,7 +232,7 @@ def _combine_search_outputs(
         suffixes=("_isco", "_isic"),
         how="outer",
     )
-    
+
     rename_map = {
         "id": "id",
         "jobnumber": "job_number",
@@ -262,7 +260,9 @@ def _combine_search_outputs(
         "match_top_1_isic": "isic_match_top_1",
     }
     combined = combined.rename(
-        columns={key: value for key, value in rename_map.items() if key in combined.columns}
+        columns={
+            key: value for key, value in rename_map.items() if key in combined.columns
+        }
     )
 
     ordered_columns = [

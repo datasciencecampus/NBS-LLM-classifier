@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 
 from .config import AppConfig
@@ -14,7 +14,9 @@ from .utils import ProgressReporter
 
 def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> float:
     """Compute top-1 and threshold metrics, then render the evaluation plot."""
-    top1_accuracy = (search_results["pred1"] == search_results["prevalidated"]).mean() * 100
+    top1_accuracy = (
+        search_results["pred1"] == search_results["prevalidated"]
+    ).mean() * 100
     print(
         f"In {round(top1_accuracy, 1)}% of cases the predicted code matched the prevalidated code."
     )
@@ -26,7 +28,13 @@ def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> float:
         covered = search_results.loc[search_results["score"] > threshold]
         coverage = len(covered) / len(search_results)
         threshold_accuracy = (covered["prevalidated"] == covered["pred1"]).mean()
-        results.append({"threshold": threshold, "coverage": coverage, "accuracy": threshold_accuracy})
+        results.append(
+            {
+                "threshold": threshold,
+                "coverage": coverage,
+                "accuracy": threshold_accuracy,
+            }
+        )
 
     results_df = pd.DataFrame(results)
 
@@ -100,9 +108,7 @@ def evaluate_search_results(
             total=4,
             message="loading ISCO search results",
         )
-    isco_results = _coerce_results(
-        pd.read_csv(config.paths.search_results_isco_file)
-    )
+    isco_results = _coerce_results(pd.read_csv(config.paths.search_results_isco_file))
     if reporter:
         reporter.step(
             stage="evaluate",
@@ -123,9 +129,7 @@ def evaluate_search_results(
             total=4,
             message="loading ISIC search results",
         )
-    isic_results = _coerce_results(
-        pd.read_csv(config.paths.search_results_isic_file)
-    )
+    isic_results = _coerce_results(pd.read_csv(config.paths.search_results_isic_file))
     if reporter:
         reporter.step(
             stage="evaluate",

@@ -8,12 +8,12 @@ from time import perf_counter
 from typing import Callable
 
 from nbs_llm_classifier.config import load_config
+from nbs_llm_classifier.evaluate import evaluate_search_results
 from nbs_llm_classifier.knowledgebase import build_knowledgebases
-from nbs_llm_classifier.utils import ProgressReporter, StageContext
-from nbs_llm_classifier.vectorstore import build_vectorstores
 from nbs_llm_classifier.query import build_queries
 from nbs_llm_classifier.search import run_searches
-from nbs_llm_classifier.evaluate import evaluate_search_results
+from nbs_llm_classifier.utils import ProgressReporter, StageContext
+from nbs_llm_classifier.vectorstore import build_vectorstores
 
 
 def _parse_args() -> argparse.Namespace:

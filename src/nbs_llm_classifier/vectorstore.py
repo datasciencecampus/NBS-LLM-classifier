@@ -5,7 +5,6 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 import truststore
-
 from classifai.indexers import VectorStore
 from classifai.vectorisers import HuggingFaceVectoriser
 

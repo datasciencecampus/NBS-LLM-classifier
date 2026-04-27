@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Mapping
 
-
 _LEVEL_ORDER = {"quiet": 0, "normal": 1, "verbose": 2}
 
 
@@ -115,11 +114,23 @@ class ProgressReporter:
 
     def warning(self, *, stage: str, progress: str, message: str) -> None:
         """Emit a warning progress message."""
-        self._emit(level="normal", severity="WARN", stage=stage, progress=progress, message=message)
+        self._emit(
+            level="normal",
+            severity="WARN",
+            stage=stage,
+            progress=progress,
+            message=message,
+        )
 
     def error(self, *, stage: str, progress: str, message: str) -> None:
         """Emit an error progress message."""
-        self._emit(level="quiet", severity="ERROR", stage=stage, progress=progress, message=message)
+        self._emit(
+            level="quiet",
+            severity="ERROR",
+            stage=stage,
+            progress=progress,
+            message=message,
+        )
 
     def _emit(
         self,

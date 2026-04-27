@@ -1,59 +1,182 @@
-<img src="https://github.com/datasciencecampus/awesome-campus/blob/master/ons_logo.png">
+![ONS Logo](./ONS_Logo_Digital_Colour_Landscape_English_RGB.svg)
 
-# NBS LLM Classifier
+# ✨ NBS LLM Classifier ✨
+This is an implementation of the [ClassifAI](https://datasciencecampus.github.io/classifai/) Python package that supports the semi-automatic classification of free text responses in the [NBS](https://nigerianstat.gov.ng/) Labour Force Survey to [ISCO](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-occupation/) and [ISIC](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-economic-activities/) coding schemes.
 
-# Introduction
-## About
-This is an implementation of the [ClassifAI](https://github.com/datasciencecampus/classifai) Python package that supports the semi-automatic classification of free text fields in the [NBS](https://nigerianstat.gov.ng/) Labour Force Survey to [ISCO](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-occupation/) and [ISIC](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-economic-activities/) coding schemes.
+## Getting started
 
-## Installation
-Install the ClassifAI package directly from GitHub into your Python environment:
-
+**1. Clone the repository**    
+Open a terminal (Command Prompt) and run:
 ```bash
-pip install "git+https://github.com/datasciencecampus/classifAI"
-pip install "classifAI[huggingface]"
+git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
+cd NBS-LLM-classifier
 ```
 
+**2. Set up your environment**    
+Create and activate a virtual environment
+```bash
+python -m venv venv
+venv\Scripts\activate.bat # on Windows
+source venv/bin/activate # on a Mac
+```
+
+Install the required dependencies    
+```bash
+pip install -r requirements.txt
+```
+
+## Repository structure
+```
+├── data/
+|   └── input                    # ISCO/ISIC coding schemes and NLFS survey data
+├── demo/                        # Example workflow
+|   └── data/ 
+│       └── input   
+├── docs/                        # Additional documentation
+├── outputs/                     # Search results
+├── src/                         # Source code
+|   └── nbs_llm_classifier/
+│       ├── config.py            # Main configuration file
+│       ├── evaluate.py          # Run classification metrics
+│       ├── knowledgebase.py     # Create knowledgebase
+│       ├── query.py             # Build input query
+│       ├── search.py            # Search input query against vectorstore
+│       └── vectorstore.py       # Build vectorstore
+│   └── main.py                  # Run end-to-end pipeline
+├── tests/                       # All tests (unit, integration, and end-to-end)
+├── config.json                  # Pipeline settings and parameters
+├── requirements.txt             # ClassifAI package and dependencies
+```
+
+## Workflow
+```mermaid
+flowchart TB
+    A[Labelled examples] --> C[LLM encoder model]
+    B[Query] --> C
+    C --> D[Vector data]
+    D --> |Query<br>searched against| E[(VectorStore)]
+    D --> |Knowledgebase<br>stored in| E
+    E -.-> F[Cosine similarity scores ranked]
+    F -.-> G[Partial automation]
+    G -.-> H[Manual/semi-automated coding]
+    H -.-> A
+
+subgraph manual
+A
+end
+
+style manual color:#2121,fill-opacity:0,stroke-width:0px
+```
+
+1. The ISCO and ISIC classification schemes are combined with 4-digit coded occupations and economic activities from the Nigeria Labour Force Survey (NLFS) to create a knowledgebase.
+2. These labelled examples are embedded as vectors and saved alongside the original free text as a VectorStore object. The transformation of text into numerical representations is handled by a vectoriser model. 
+3. Query data from a different wave of the NLFS is also embedded as a vector and searched against the labelled examples in the VectorStore. 
+4. The semantic similarity or distance between each vector query and knowledgebase entry is then calculated. 
+5. The nearest N labelled examples are returned with their distance. <br />
+
+## Input and outputs
+
+### Inputs
+The NLFS survey data needs to contain the following columns: `['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']`. `id` is a unique id that concatenates `interview_id`, `hhnumber`, `hhroster_id` and `jobnumber`.
+
+### Outputs
+The NBS LLM Classifier pipeline will output the following columns in `.csv` format.
+
+|Variable |Description |Example value |
+|:-----|:-----|:-----|
+|`id`|Joining variable |00090a7060624433b7b8f9edf3490878111 |
+|`job_number` |Multiple job holders |1 |
+|`isco_query_id` |Joining variable |00090a7060624433b7b8f9edf3490878111 |
+|`isco_query` |Occupation |local government driver transporting clients from one destination to another, transporting goods |
+|`isco_prevalidated`|Field interviewer recorded 4-digit ISCO code |8322 |
+|`isco_pred1` |Top-1 4-digit ISCO prediction |8322 |
+|`isco_pred1_label` |Top-1 4-digit ISCO prediction with label|8322 Car, Taxi and Van Drivers |
+|`isco_pred1_score` |Top-1 4-digit ISCO prediction similarity score |0.828753829 |
+|`isco_match_top_1` |Top-1 4-digit ISCO prediction matches pre-validated code |TRUE |
+|`isco_pred2` |Top-2 4-digit ISCO prediction |8331 | 
+|`isco_pred2_label` |Top-2 4-digit ISCO prediction with label |8331 Bus and Tram Drivers |
+|`isco_pred3` |Top-3 4-digit ISCO prediction |8321 | 
+|`isco_pred3_label` |Top-3 4-digit ISCO prediction |8321 Motorcycle Drivers|
+|`isic_query_id` |Joining variable |00090a7060624433b7b8f9edf3490878111 | 
+|`isic_query` |Economic activity |filling and keeping record, answering phone calls, welcoming and graeting guests, purchase tools and materials answering and directing phone calls, managing offices resources and supplies and filling |
+|`isic_prevalidated` |Field interviewer recorded 4-digit ISIC code |8411 |
+|`isic_pred1` |Top-1 4-digit ISIC prediction |5510 | 
+|`isic_pred1_label` |Top-1 4-digit ISIC prediction with label |5510 Short term accommodation activities |
+|`isic_pred1_score` |Top-1 4-digit ISIC prediction similarity score |0.65932399 |
+|`isic_match_top_1` |Top-1 4-digit ISIC prediction matches pre-validated code |FALSE |
+|`isic_pred2` |Top-2 4-digit ISIC prediction |8211 | 
+|`isic_pred2_label` |Top-2 4-digit ISIC prediction with label |8211 Combined office administrative service activities |
+|`isic_pred3` |Top-3 4-digit ISIC prediction |5610 |
+|`isic_pred3_label` |Top-3 4-digit ISIC prediction with label |5610 Restaurants and mobile food service activities |
+
+<br />If the Top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the Top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
+
+## Usage
+1. Save knowledgebase (`ISCO.xlsx`; `ISIC.xlsx` and validated NLFS survey data) and input query (pre-validated NLFS survey data) in the `data/input` folder.
+2. Check `config.json` includes appropriate LLM encoder model and points to the correct file paths.
+3. Run `src/main.py` in the command-line interface.
+
+```bash
+python src/main.py all
+```
+
+If you want to run a particular step of the pipeline swap out `all` for `knowledgebase`, `vectorstore`, `query`, `search` or `evaluate`.
+
+4. Check accuracy and coverage metrics.
+5. Merge `outputs/search_results.csv` file with raw data using joining variable.
+6. Classify data by:
+   a. *Partial automation + manual/semi-automated coding*. Cases can be automatically classified where the pre-validated code matches 'Prediction 1'. The remaining cases can be classified using the top-3 predicted codes.
+   b. *Semi-automated coding*. The candidate ISCO/ISIC codes predicted by the model can be used to guide manual coding.
+7. Save manually coded data and add to knowledgebase.
+
+## Dependencies
+[ClassifAI](https://datasciencecampus.github.io/classifai/) is the core Python package used in the NBS LLM Classifier pipeline. It uses semantic search over a knowledgebase of previously coded examples to classify free-text survey responses.
+Please see `requirements.txt` for other runtime dependencies.
+
+### Dependency and tooling files
+- `requirements.txt` contains the dependencies needed to run the pipeline.
+- `requirements-dev.txt` contains additional contributor tools such as pre-commit and Ruff. It does not replace `requirements.txt`.
+- `pyproject.toml` stores Python tool configuration. In this repository, it configures Ruff linting and formatting.
+
+## Configuration
+
 ### Pre-commit actions
-This repository contains a configuration of pre-commit hooks. These are language agnostic and focussed on repository security (such as detection of passwords and API keys). If approaching this project as a developer, you are encouraged to install and enable `pre-commits` by running the following in your shell:
-   1. Install `pre-commit`:
+This repository contains a configuration of pre-commit hooks for Python linting and formatting, generic file hygiene, and security checks such as detection of passwords and API keys. If approaching this project as a developer, activate your virtual environment, install the runtime dependencies from `requirements.txt`, then install and enable `pre-commit` by running the following in your shell:
+   1. Install the additional developer dependencies:
 
       ```
-      pip install pre-commit
+      pip install -r requirements-dev.txt
       ```
    2. Enable `pre-commit`:
 
       ```
       pre-commit install
       ```
-Once pre-commits are activated, whenever you commit to this repository a series of checks will be executed. The pre-commits include checking for security keys, large files and unresolved merge conflict headers. The use of active pre-commits are highly encouraged and the given hooks can be expanded with Python or R specific hooks that can automate the code style and linting. For example, the `flake8` and `black` hooks are useful for maintaining consistent Python code formatting.
+   3. Run the checks locally before opening a pull request:
+
+      ```
+      pre-commit run --all-files
+      ```
+Once pre-commit is activated, a series of checks will be executed whenever you commit. The configured hooks include Ruff linting and formatting for Python code, checks for security keys, checks for large files, and checks for unresolved merge conflict headers.
+
+Most contributors should run Ruff through pre-commit. To run Ruff directly for a focused local check, use:
+
+```
+ruff check .
+ruff check . --fix
+ruff format .
+```
 
 **NOTE:** Pre-commit hooks execute Python, so it expects a working Python build.
 
-## Usage
-*Explain how to use the things in the repo.*
+## Contributing
+We welcome contributions from internal and NSO colleagues! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on raising issues, opening branches, and submitting pull requests.
 
-### Workflow
+## Security
+Please see [SECURITY.md](SECURITY.md) for information on reporting security vulnerabilities and our security policy.
 
-```mermaid
-flowchart TB
-    A[Labelled examples] --> B[Embedding model]
-    A1[Query data] --> B
-    B --> C[Vector data]
-    C --> |Stored in| D[(VectorStore)]
-    B --> C1[Vector data]
-    C1 --> |Searched against| D
-    D -.-> E[Cosine similarity scores ranked]
-```
+## Data Science Campus
+At the [Data Science Campus](https://datasciencecampus.ons.gov.uk/about-us/) we apply data science, and build skills, for public good across the UK and internationally. Get in touch with the Campus at [datasciencecampus\@ons.gov.uk](datasciencecampus@ons.gov.uk).
 
-# License
-
-<!-- Unless stated otherwise, the codebase is released under [the MIT Licence][mit]. -->
-
-The code, unless otherwise stated, is released under [the MIT Licence][mit].
-
-The documentation for this work is subject to [© Crown copyright][copyright] and is available under the terms of the [Open Government 3.0][ogl] licence.
-
-[mit]: LICENCE
-[copyright]: http://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/
-[ogl]: http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
+## License
+See [LICENSE](LICENSE) for details.
