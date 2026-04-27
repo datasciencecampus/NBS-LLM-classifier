@@ -9,13 +9,13 @@ This is an implementation of the [ClassifAI](https://datasciencecampus.github.io
 │   ├── pre-processed            # NLFS survey data
 |   └── raw                      # ISCO/ISIC coding schemes
 ├── demo/                        # Example workflow
-|   └── data/ 
+|   └── data/
 │       ├── pre-processed
-│       └── raw   
+│       └── raw
 ├── docs/                        # Additional documentation
 ├── outputs/                     # Search results
 ├── src/                         # Source code
-|   └── nbs_llm_classifier/ 
+|   └── nbs_llm_classifier/
 │       ├── config.py            # Main configuration file
 │       ├── evaluate.py          # Run classification metrics
 │       ├── knowledgebase.py     # Create knowledgebase
@@ -30,14 +30,14 @@ This is an implementation of the [ClassifAI](https://datasciencecampus.github.io
 
 ## Installation
 
-**1. Clone the repository**    
+**1. Clone the repository**
 
 ```bash
 git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
 cd NBS-LLM-classifier
 ```
 
-**2. Set up virtual environment**    
+**2. Set up virtual environment**
 A *virtual environment* allows you to manage the installation and updating of Python packages that are needed for your project without interfering with packages used by the system or by other projects.
 
 Create the virtual environment and then activate it.
@@ -47,7 +47,7 @@ venv\Scripts\activate.bat # on Windows
 source venv/bin/activate # on a Mac
 ```
 
-**3. Install the required dependencies**    
+**3. Install the required dependencies**
 ```bash
 pip install -r requirements.txt
 ```
@@ -87,18 +87,18 @@ The ISCO and ISIC classification schemes are combined with 4-digit coded occupat
 |`isco_pred1_label` |8322 Car, Taxi and Van Drivers |
 |`isco_pred1_score` |0.828753829 |
 |`isco_match_top_1` |TRUE |
-|`isco_pred2` |8331 | 
+|`isco_pred2` |8331 |
 |`isco_pred2_label` |8331 Bus and Tram Drivers |
-|`isco_pred3` |8321 | 
+|`isco_pred3` |8321 |
 |`isco_pred3_label` |8321 Motorcycle Drivers|
-|`isic_query_id` |00090a7060624433b7b8f9edf3490878111 | 
+|`isic_query_id` |00090a7060624433b7b8f9edf3490878111 |
 |`isic_query` |filling and keeping record, answering phone calls, welcoming and graeting guests, purchase tools and materials answering and directing phone calls, managing offices resources and supplies and filling |
 |`isic_prevalidated` |8411 |
-|`isic_pred1` |5510 | 
+|`isic_pred1` |5510 |
 |`isic_pred1_label` |5510 Short term accommodation activities |
 |`isic_pred1_score` |0.65932399 |
 |`isic_match_top_1` |FALSE |
-|`isic_pred2` |8211 | 
+|`isic_pred2` |8211 |
 |`isic_pred2_label` |8211 Combined office administrative service activities |
 |`isic_pred3` |5610 |
 |`isic_pred3_label` |5610 Restaurants and mobile food service activities |
@@ -119,30 +119,48 @@ If you want to run a particular step of the pipeline swap out `all` for `knowled
 
 4. Check accuracy and coverage metrics.
 5. Merge `outputs/search_results.csv` file with raw data using joining variable.
-6. Classify data by:   
-   a. *Partial automation + manual/semi-automated coding*. Cases can be automatically classified where the pre-validated code matches 'Prediction 1'. The remaining cases can be classified using the top-3 predicted codes.   
-   b. *Semi-automated coding*. The candidate ISCO/ISIC codes predicted by the model can be used to guide manual coding.   
+6. Classify data by:
+   a. *Partial automation + manual/semi-automated coding*. Cases can be automatically classified where the pre-validated code matches 'Prediction 1'. The remaining cases can be classified using the top-3 predicted codes.
+   b. *Semi-automated coding*. The candidate ISCO/ISIC codes predicted by the model can be used to guide manual coding.
 7. Save manually coded data and add to knowledgebase.
 
 ## Dependencies
 [ClassifAI](https://datasciencecampus.github.io/classifai/) is the core Python package used in the NBS LLM Classifier pipeline. It uses semantic search over a knowledgebase of previously coded examples to classify free-text survey responses.
-Please see `requirements.txt` for other dependencies.
+Please see `requirements.txt` for other runtime dependencies.
+
+### Dependency and tooling files
+- `requirements.txt` contains the dependencies needed to run the pipeline.
+- `requirements-dev.txt` contains additional contributor tools such as pre-commit and Ruff. It does not replace `requirements.txt`.
+- `pyproject.toml` stores Python tool configuration. In this repository, it configures Ruff linting and formatting.
 
 ## Configuration
 
 ### Pre-commit actions
-This repository contains a configuration of pre-commit hooks. These are language agnostic and focussed on repository security (such as detection of passwords and API keys). If approaching this project as a developer, you are encouraged to install and enable `pre-commits` by running the following in your shell:
-   1. Install `pre-commit`:
+This repository contains a configuration of pre-commit hooks for Python linting and formatting, generic file hygiene, and security checks such as detection of passwords and API keys. If approaching this project as a developer, activate your virtual environment, install the runtime dependencies from `requirements.txt`, then install and enable `pre-commit` by running the following in your shell:
+   1. Install the additional developer dependencies:
 
       ```
-      pip install pre-commit
+      pip install -r requirements-dev.txt
       ```
    2. Enable `pre-commit`:
 
       ```
       pre-commit install
       ```
-Once pre-commits are activated, whenever you commit to this repository a series of checks will be executed. The pre-commits include checking for security keys, large files and unresolved merge conflict headers. The use of active pre-commits are highly encouraged and the given hooks can be expanded with Python or R specific hooks that can automate the code style and linting. For example, the `flake8` and `black` hooks are useful for maintaining consistent Python code formatting.
+   3. Run the checks locally before opening a pull request:
+
+      ```
+      pre-commit run --all-files
+      ```
+Once pre-commit is activated, a series of checks will be executed whenever you commit. The configured hooks include Ruff linting and formatting for Python code, checks for security keys, checks for large files, and checks for unresolved merge conflict headers.
+
+Most contributors should run Ruff through pre-commit. To run Ruff directly for a focused local check, use:
+
+```
+ruff check .
+ruff check . --fix
+ruff format .
+```
 
 **NOTE:** Pre-commit hooks execute Python, so it expects a working Python build.
 

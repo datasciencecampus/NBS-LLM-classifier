@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+
 import pandas as pd
 
 from .config import AppConfig
@@ -28,10 +29,14 @@ def _build_isco_frame(isco_xlsx: Path, q1_csv: Path) -> pd.DataFrame:
     )
     q1_isco["label"] = q1_isco["isco"].str.extract(r"(\d+)")
     q1_isco["text"] = (
-        q1_isco["occupationname"].fillna("")
-        + " "
-        + q1_isco["occupationtasksduties"].fillna("")
-    ).str.strip().str.lower()
+        (
+            q1_isco["occupationname"].fillna("")
+            + " "
+            + q1_isco["occupationtasksduties"].fillna("")
+        )
+        .str.strip()
+        .str.lower()
+    )
 
     kb_isco = pd.concat([isco, q1_isco[["label", "text"]]], ignore_index=True)
     kb_isco = kb_isco.drop_duplicates(subset=["label", "text"], keep="first")
@@ -59,10 +64,14 @@ def _build_isic_frame(isic_xlsx: Path, q1_csv: Path) -> pd.DataFrame:
     )
     q1_isic["label"] = q1_isic["isic"].str.extract(r"(\d+)")[0].str.zfill(4)
     q1_isic["text"] = (
-        q1_isic["activityname"].fillna("")
-        + " "
-        + q1_isic["activitygoodsservices"].fillna("")
-    ).str.strip().str.lower()
+        (
+            q1_isic["activityname"].fillna("")
+            + " "
+            + q1_isic["activitygoodsservices"].fillna("")
+        )
+        .str.strip()
+        .str.lower()
+    )
 
     kb_isic = pd.concat([isic, q1_isic[["label", "text"]]], ignore_index=True)
     kb_isic = kb_isic.drop_duplicates(subset=["label", "text"], keep="first")

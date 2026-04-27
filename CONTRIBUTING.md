@@ -28,12 +28,25 @@ Thank you for your interest in contributing to the NBS LLM Classifier project! W
 6. Respond to any review comments and update your PR as needed.
 
 ## Code Style, Quality & Pre-commit Hooks
-- Please follow the existing code style (see `pyproject.toml`).
+- Please follow the existing code style configured in `pyproject.toml`.
+- `requirements.txt` contains runtime dependencies for the pipeline.
+- `requirements-dev.txt` contains additional contributor tools, including pre-commit and Ruff. It should be installed after `requirements.txt`, not instead of it.
+- `pyproject.toml` stores the Ruff linting and formatting configuration.
 - **Pre-commit hooks are required**! They help catch formatting, linting, and quality issues before code is committed. This keeps the codebase clean and consistent for everyone.
-- To install pre-commit hooks:
+- To install pre-commit hooks, activate your virtual environment after installing `requirements.txt`, then run:
   ```sh
-  pip install pre-commit
+  pip install -r requirements-dev.txt
   pre-commit install
+  ```
+- To run the same checks locally before opening a PR:
+  ```sh
+  pre-commit run --all-files
+  ```
+- Most contributors should run Ruff through pre-commit. To run Ruff directly for a focused local check:
+  ```sh
+  ruff check .
+  ruff check . --fix
+  ruff format .
   ```
 - Write clear, concise commit messages.
 - Ensure your code is well-documented and tested.
