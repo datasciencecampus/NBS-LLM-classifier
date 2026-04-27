@@ -1,3 +1,5 @@
+"""Shared progress-reporting utilities used by pipeline stages."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -13,17 +15,23 @@ def _normalize_level(level: str) -> str:
 
 @dataclass(frozen=True)
 class StageContext:
+    """Identifies a pipeline stage and its position in the current run."""
+
     name: str
     current: int | None = None
     total: int | None = None
 
 
 class ProgressReporter:
+    """Emit structured, human-readable progress events to stdout."""
+
     def __init__(self, verbosity: str = "normal", timestamps: bool = True) -> None:
+        """Create a console progress reporter with configurable verbosity."""
         self.verbosity = _normalize_level(verbosity)
         self.timestamps = timestamps
 
     def pipeline_start(self, command: str, total_stages: int) -> None:
+        """Emit a pipeline-start event."""
         self.info(
             stage="pipeline",
             progress=f"0/{total_stages}",
@@ -31,6 +39,7 @@ class ProgressReporter:
         )
 
     def pipeline_complete(self, duration_seconds: float) -> None:
+        """Emit a pipeline-complete event with elapsed time."""
         self.info(
             stage="pipeline",
             progress="complete",
@@ -38,6 +47,7 @@ class ProgressReporter:
         )
 
     def pipeline_failed(self, duration_seconds: float, error: Exception) -> None:
+        """Emit a pipeline-failed event with elapsed time and exception."""
         self.error(
             stage="pipeline",
             progress="failed",
@@ -45,6 +55,7 @@ class ProgressReporter:
         )
 
     def stage_start(self, context: StageContext) -> None:
+        """Emit a stage-start event for the provided stage context."""
         progress = self._format_progress(context.current, context.total)
         self.info(stage=context.name, progress=progress, message="started")
 
@@ -54,6 +65,7 @@ class ProgressReporter:
         duration_seconds: float,
         metrics: Mapping[str, object] | None = None,
     ) -> None:
+        """Emit a stage-complete event with optional metrics."""
         progress = self._format_progress(context.current, context.total)
         suffix = self._format_metrics(metrics)
         self.info(
@@ -68,6 +80,7 @@ class ProgressReporter:
         duration_seconds: float,
         error: Exception,
     ) -> None:
+        """Emit a stage-failed event for the provided stage context."""
         progress = self._format_progress(context.current, context.total)
         self.error(
             stage=context.name,
@@ -85,6 +98,7 @@ class ProgressReporter:
         level: str = "normal",
         metrics: Mapping[str, object] | None = None,
     ) -> None:
+        """Emit an ad-hoc progress step for a pipeline stage."""
         progress = self._format_progress(current, total)
         suffix = self._format_metrics(metrics)
         self._emit(
@@ -95,9 +109,11 @@ class ProgressReporter:
         )
 
     def info(self, *, stage: str, progress: str, message: str) -> None:
+        """Emit an informational progress message."""
         self._emit(level="normal", stage=stage, progress=progress, message=message)
 
     def warning(self, *, stage: str, progress: str, message: str) -> None:
+        """Emit a warning progress message."""
         self._emit(
             level="normal",
             severity="WARN",
@@ -107,6 +123,7 @@ class ProgressReporter:
         )
 
     def error(self, *, stage: str, progress: str, message: str) -> None:
+        """Emit an error progress message."""
         self._emit(
             level="quiet",
             severity="ERROR",

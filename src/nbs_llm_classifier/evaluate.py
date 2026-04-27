@@ -1,3 +1,5 @@
+"""Evaluate search outputs and visualise coverage-versus-accuracy trade-offs."""
+
 from __future__ import annotations
 
 import matplotlib.pyplot as plt
@@ -11,6 +13,7 @@ from .utils import ProgressReporter
 
 
 def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> float:
+    """Compute top-1 and threshold metrics, then render the evaluation plot."""
     top1_accuracy = (
         search_results["pred1"] == search_results["prevalidated"]
     ).mean() * 100
@@ -85,6 +88,7 @@ def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> float:
 
 
 def _coerce_results(search_results: pd.DataFrame) -> pd.DataFrame:
+    """Normalize result column types used by evaluation calculations."""
     coerced = search_results.copy()
     coerced["pred1"] = coerced["pred1"].astype(str)
     coerced["prevalidated"] = coerced["prevalidated"].astype(str)
@@ -96,6 +100,7 @@ def evaluate_search_results(
     config: AppConfig,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
+    """Evaluate ISCO/ISIC search outputs and return top-1 accuracy metrics."""
     if reporter:
         reporter.step(
             stage="evaluate",

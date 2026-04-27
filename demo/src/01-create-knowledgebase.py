@@ -43,7 +43,7 @@ q1_isco.head()
 
 # Combine ISCO scheme and labelled data
 kb_isco = pd.concat([isco, q1_isco[["id", "text"]]])
-kb_isco = kb_isco.drop_duplicates(subset=["id" and "text"], keep="first", inplace=False)
+kb_isco = kb_isco.drop_duplicates(subset=["id", "text"], keep="first", inplace=False)
 kb_isco.to_csv("../data/dictionaries/kb_isco.csv", columns=["id", "text"], index=False)
 
 # ISIC -----------------------------------------------------------------------
@@ -86,5 +86,5 @@ q1_isic.head()
 
 # Combine ISIC scheme and labelled data
 kb_isic = pd.concat([isic, q1_isic[["id", "text"]]])
-kb_isic = kb_isic.drop_duplicates(subset=["id" and "text"], keep="first", inplace=False)
+kb_isic = kb_isic.drop_duplicates(subset=["id", "text"], keep="first", inplace=False)
 kb_isic.to_csv("../data/dictionaries/kb_isic.csv", columns=["id", "text"], index=False)

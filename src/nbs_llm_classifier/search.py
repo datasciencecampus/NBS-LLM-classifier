@@ -1,3 +1,5 @@
+"""Run vector search inference and combine ISCO/ISIC search outputs."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -12,6 +14,7 @@ from .vectorstore import create_vectoriser
 
 
 def _combine_ranked_results(search_results: pd.DataFrame) -> pd.DataFrame:
+    """Collapse raw search hits into top-3 predictions per query id."""
     scores = (
         search_results[["query_id", "doc_label", "score"]]
         .groupby(["query_id", "doc_label"])["score"]
@@ -26,6 +29,7 @@ def _combine_ranked_results(search_results: pd.DataFrame) -> pd.DataFrame:
         .reset_index()
         .drop(columns=["count"])
     )
+    # Keep the best score for each unique predicted label per query.
     unique = unique.merge(scores, on=["query_id", "doc_label"], how="left")
     unique["rank"] = unique.groupby("query_id").cumcount()
 
@@ -56,6 +60,7 @@ def _run_search(
     label: str,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
+    """Run a single ISCO or ISIC search flow and write its output CSV."""
     if reporter:
         reporter.step(
             stage="search",
@@ -125,6 +130,7 @@ def run_searches(
     config: AppConfig,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
+    """Run ISCO and ISIC vector searches and write combined outputs."""
     if reporter:
         reporter.step(
             stage="search",
@@ -212,6 +218,7 @@ def _combine_search_outputs(
     isic_file: Path,
     output_file: Path,
 ) -> None:
+    """Merge ISCO and ISIC search outputs into one combined result file."""
     isco_results = pd.read_csv(isco_file, dtype=str)
     isic_results = pd.read_csv(isic_file, dtype=str)
 
@@ -297,6 +304,7 @@ def _load_description_lookup(
     code_column: str,
     description_column: str,
 ) -> dict[str, str]:
+    """Load code-to-description mappings from a classification worksheet."""
     frame = pd.read_excel(
         file_path,
         sheet_name=sheet_name,
@@ -310,6 +318,7 @@ def _load_description_lookup(
 
 
 def _format_code_label(code: str, descriptions: dict[str, str]) -> str:
+    """Render a prediction code with its human-readable description when available."""
     if code is None:
         return ""
     description = descriptions.get(str(code))

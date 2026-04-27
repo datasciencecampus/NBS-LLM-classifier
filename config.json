@@ -1,20 +1,21 @@
 {
-  "model_name": "sentence-transformers/all-MiniLM-L6-v2",
-  "n_results": 15,
-  "paths": {
-    "data_dir": "data",
-    "raw_dir": "data/raw",
-    "preprocessed_dir": "data/pre-processed",
-    "dictionaries_dir": "data/dictionaries",
-    "vector_store_dir": "vector_store",
-    "isco_xlsx": "data/raw/ISCO.xlsx",
-    "isic_xlsx": "data/raw/ISIC.xlsx",
-    "nlfs_q1_csv": "data/pre-processed/NLFS_2024Q1.csv",
-    "nlfs_q2_csv": "data/pre-processed/NLFS_2024Q2.csv",
-    "query_isco_file": "data/query_isco.csv",
-    "query_isic_file": "data/query_isic.csv",
-    "search_results_isco_file": "outputs/search_results_isco.csv",
-    "search_results_isic_file": "outputs/search_results_isic.csv",
-    "kb_isco_file": "data/dictionaries/kb_isco.csv",
-    "kb_isic_file": "data/dictionaries/kb_isic.csv"}
-  }
+    "model_name":  "sentence-transformers/all-MiniLM-L6-v2",
+    "n_results":  15,
+    "paths":  {
+                  "data_dir":  "data",
+                  "raw_dir":  "data/input",
+                  "preprocessed_dir":  "data/input",
+                  "dictionaries_dir":  "data/knowledgebase",
+                  "vector_store_dir":  "vector_store",
+                  "isco_xlsx":  "data/input/ISCO.xlsx",
+                  "isic_xlsx":  "data/input/ISIC.xlsx",
+                  "nlfs_validated_csv":  "data/input/NLFS_2024Q1.csv",
+                  "nlfs_prevalidated_csv":  "data/input/NLFS_2024Q2.csv",
+                  "query_isco_file":  "data/query/query_isco.csv",
+                  "query_isic_file":  "data/query/query_isic.csv",
+                  "search_results_isco_file":  "outputs/search_results_isco.csv",
+                  "search_results_isic_file":  "outputs/search_results_isic.csv",
+                  "kb_isco_file":  "data/knowledgebase/kb_isco.csv",
+                  "kb_isic_file":  "data/knowledgebase/kb_isic.csv"
+              }
+}
