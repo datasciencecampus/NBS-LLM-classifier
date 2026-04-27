@@ -18,8 +18,8 @@ The quarterly data from the Nigeria Labour Force Survey are a subset of those pu
 
 1. *Build knowledgebases*: Two separate knowledgebases are created. One contains the ISCO statistical coding scheme with labelled examples from the Q1 2024 Nigeria Labour Force Survey. The other knowledgebase is based on the ISIC coding scheme. The 4-digit code is stored as `id` and the text descriptions are concatenated under `text`. Duplicate entries from amongst the labelled examples are removed. Each knowledgebase is saved as a `.csv` file in the `data/knowledgebase` subfolder.
 2. *Create vector store*: Each knowledgebase is vectorised using the chosen embedding model and stored as a vector store. Essentially, this converts the knowledgebase entries into vectors of numbers.
-3. *Build query files*: The Q2 2024 Nigeria Labour Force Survey data is pre-processed to three columns: [`id`,`query`,`pre_validated`]. The `id` column is a joining variable, `query` contains the free text, and `pre_validated` is the enumerator's 4-digit ISIC or ISCO code. **NB** The joining variable concatenates ['interview_id,'hhnumber','hhroster_id,'jobnumber']. 
-4. *Search vector store*: The input query (Q2 2024 NLFS) is vectorised and searched against the knowledgebase entries (ISCO/ISIC + Q1 2024 NLFS) in the vector store.  
+3. *Build query files*: The Q2 2024 Nigeria Labour Force Survey data is pre-processed to three columns: [`id`,`query`,`pre_validated`]. The `id` column is a joining variable, `query` contains the free text, and `pre_validated` is the enumerator's 4-digit ISIC or ISCO code. **NB** The joining variable concatenates ['interview_id,'hhnumber','hhroster_id,'jobnumber'].
+4. *Search vector store*: The input query (Q2 2024 NLFS) is vectorised and searched against the knowledgebase entries (ISCO/ISIC + Q1 2024 NLFS) in the vector store.
 5. *Evaluation*: The accuracy of matching between the pre-validated and predicted 4-digit codes is calculated. This serves as the threshold for semi-automation.
 
 ## Setup
@@ -36,7 +36,7 @@ Execute the following code into the Terminal console:
 git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
 ```
 
-This will install a copy of the NBS LLM classifier GitHub repo onto your local machine. Now select `File > Close Folder` from the menu and open the new folder in VS Code. 
+This will install a copy of the NBS LLM classifier GitHub repo onto your local machine. Now select `File > Close Folder` from the menu and open the new folder in VS Code.
 
 ### Create a virtual environment
 Open the Terminal in VS Code and create a *virtual environment*. A virtual environment allows you to manage the installation and updating of Python packages that are needed for your project without interfering with packages used by the system or by other projects.
@@ -69,15 +69,19 @@ The `config.json` file contains all of the file paths to the datasets needed in 
 ├── demo/
 |   └── input
 │       ├── ISCO.xlsx
+<<<<<<< issue-6-python-lint-format-hooks
+|       └── ISIC.xlsx
+=======
 │       ├── ISIC.xlsx
 |       └── NLFS_2024Q1.csv
 |       └── NLFS_2024Q2.csv     
+>>>>>>> main
 ```
 
 It is good practice to check that the file paths in the `config.json` file are correct before running the code.
 
 ## Choose vectoriser
-The classifAI packages allows you to download vectorisers from GCP, Ollama and Hugging Face. We will pick a vectoriser from Hugging Face called [all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2). This model is lightweight and can be downloaded locally. To download this model we need to add its full name including the framework (i.e. sentence-transformers) to the `model_name` parameter in the `config.json` file. 
+The classifAI packages allows you to download vectorisers from GCP, Ollama and Hugging Face. We will pick a vectoriser from Hugging Face called [all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2). This model is lightweight and can be downloaded locally. To download this model we need to add its full name including the framework (i.e. sentence-transformers) to the `model_name` parameter in the `config.json` file.
 
 ## Run `main.py`
 The next step is to run the main Python script in the Terminal. Just enter and execute the following:
@@ -95,12 +99,41 @@ When complete the accuracy of the model will be printed in the console.
 
 $$Accuracy = \frac{Number of correct predictions}{Total number of predictions}$$
 
-Accuracy is the percentage of correctly classified cases or specifically the percentage of predicted ISCO/ISIC codes that match the pre-validated ones. Those cases that match can be automatically classified. The remaining cases can be manually classified using the 3 predicted ISCO/ISIC codes. 
+Accuracy is the percentage of correctly classified cases or specifically the percentage of predicted ISCO/ISIC codes that match the pre-validated ones. Those cases that match can be automatically classified. The remaining cases can be manually classified using the 3 predicted ISCO/ISIC codes.
 
 An additional plot comparing accuracy against coverage is also drawn.
 
 ## Search results
+<<<<<<< issue-6-python-lint-format-hooks
+The search results generated by the pipeline will be saved in the `/outputs` folder with the name of the coding scheme appended to the filename e.g. `search_results_isic.csv`. There are 9 variables in the search results:
+
+- `id`: joining variable
+- `job_number`: multiple job holder
+- `isco_query_id`: ISCO query id
+- `isco_query`: ISCO query text
+- `isco_prevalidated`: pre-validated 4-digit ISCO code
+- `isco_pred1`: top-1 predicted 4-digit ISCO code
+- `isco_pred1_label`: top-1 predicted 4-digit ISCO code plus label
+- `isco_pred1_score`: cosine similarity score between the query and vector store entry
+- `isco_match_top_1`: Boolean operator where TRUE is `isco_pred1` == `isco_prevalidated`. This can be filtered as the threshold for automatic coding
+- `isco_pred2`: top-2 predicted 4-digit ISCO code
+- `isco_pred2_label`: top-2 predicted 4-digit ISCO code plus label
+- `isco_pred3`: top-3 predicted 4-digit ISCO code
+- `isco_pred3_label`: top-3 predicted 4-digit ISCO code plus label
+- `isic_query_id`: ISIC query id
+- `isic_query`: ISIC query text
+- `isic_prevalidated`: pre-validated 4-digit ISIC code
+- `isic_pred1`: top-1 predicted 4-digit ISIC code
+- `isic_pred1_label`: top-1 predicted 4-digit ISIC code plus label
+- `isic_pred1_score`: cosine similarity score between the query and vector store entry
+- `isic_match_top_1`: Boolean operator where TRUE is `isic_pred1` == `isic_prevalidated`. This can be filtered as the threshold for automatic coding
+- `isic_pred2`: top-2 predicted 4-digit ISIC code
+- `isic_pred2_label`: top-2 predicted 4-digit ISIC code plus label
+- `isic_pred3`: top-3 predicted 4-digit ISIC code
+- `isic_pred3_label`: top-3 predicted 4-digit ISIC code plus label
+=======
 The search results generated by the pipeline will be saved in the `/outputs` folder with the name of the coding scheme appended to the filename e.g. `search_results_isic.csv`. 
+>>>>>>> main
 
 ## Optional: Add manually coded cases to the knowledgebase
 The cases where `[isco/isic]_match_top_1` == FALSE can be manually coded using the 4-digit ISCO/ISIC candidate codes predicted by the tool. When completed these labelled examples can be added to the original knowledgebase. To do this you must update the `config.json` with the path to the manually coded cases and run:
