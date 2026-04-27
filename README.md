@@ -114,26 +114,6 @@ The NBS LLM Classifier pipeline will output the following columns in `.csv` form
 ## Usage
 1. Save knowledgebase (`ISCO.xlsx`; `ISIC.xlsx` and validated NLFS survey data) and input query (pre-validated NLFS survey data) in the `data/input` folder.
 2. Check `config.json` includes appropriate LLM encoder model and points to the correct file paths.
-
-**`config.json` schema** <br />
-
-|Field |Description |Type |
-|:----|:----|:----|
-|"data_dir"	|All datasets |Folder |
-|"input_dir" |Classifications schemes and validated survery responses |Folder |
-|"kb_dir" |Knowledgebase |Folder |
-|"vector_store_dir" |Vector store |Folder |
-|"isco_xlsx" |ISCO classification scheme |`.xlsx` |
-|"isic_xlsx" |ISIC classification scheme |`.xlsx` |
-|"nlfs_validated_csv" |Validated NLFS survey responses |`.csv` |
-|"nlfs_prevalidated_csv" |Pre-validated NLFS survey responses |`.csv` |
-|"query_isco_file" |ISCO query |`.csv` |
-|"query_isic_file" |ISIC query |`.csv` |
-|"search_results_isco_file" |ISCO search results |`.csv` |
-|"search_results_isic_file" |ISIC search results |`.csv` |
-|"kb_isco_file" |ISCO knowledgebase |`.csv` |
-|"kb_isic_file" |ISIC knowledgebase |`.csv` |
-
 3. Run `src/main.py` in the command-line interface.
 
 ```bash
