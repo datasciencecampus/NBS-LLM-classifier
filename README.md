@@ -77,7 +77,7 @@ style manual color:#2121,fill-opacity:0,stroke-width:0px
 ## Input and outputs
 
 ### Inputs
-The NLFS survey data needs to contain the following columns: ['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']. `id` is a unique id that concatenates `interview_id`, `hhnumber`, `hhroster_id` and `jobnumber`.
+The NLFS survey data needs to contain the following columns: `['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']`. `id` is a unique id that concatenates `interview_id`, `hhnumber`, `hhroster_id` and `jobnumber`.
 
 ### Outputs
 The NBS LLM Classifier pipeline will output the following columns in `.csv` format.
