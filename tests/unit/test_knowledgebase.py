@@ -23,11 +23,11 @@ def test_build_knowledgebases_writes_outputs_and_summary(tmp_path, monkeypatch):
 
     monkeypatch.setattr(
         "nbs_llm_classifier.knowledgebase._build_isco_frame",
-        lambda isco_xlsx, q1_csv: expected_isco,
+        lambda isco_xlsx, validated_csv: expected_isco,
     )
     monkeypatch.setattr(
         "nbs_llm_classifier.knowledgebase._build_isic_frame",
-        lambda isic_xlsx, q1_csv: expected_isic,
+        lambda isic_xlsx, validated_csv: expected_isic,
     )
 
     summary = build_knowledgebases(config)

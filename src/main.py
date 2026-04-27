@@ -1,3 +1,5 @@
+"""Command-line entrypoint for running NBS LLM classifier pipeline stages."""
+
 from __future__ import annotations
 
 import argparse
@@ -15,6 +17,7 @@ from nbs_llm_classifier.evaluate import evaluate_search_results
 
 
 def _parse_args() -> argparse.Namespace:
+    """Parse command-line arguments for selecting pipeline stages."""
     parser = argparse.ArgumentParser(description="NBS LLM classifier pipeline")
     parser.add_argument(
         "--config",
@@ -41,6 +44,7 @@ def _parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    """Run the selected pipeline stage or execute the full pipeline."""
     args = _parse_args()
     config = load_config(args.config)
     progress_level = args.progress or config.progress_verbosity

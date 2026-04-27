@@ -32,8 +32,8 @@ def make_app_config(tmp_path: Path, include_outputs_dir: bool = True) -> AppConf
         vector_store_dir=vector_store_dir,
         isco_xlsx=raw_dir / "ISCO.xlsx",
         isic_xlsx=raw_dir / "ISIC.xlsx",
-        nlfs_q1_csv=preprocessed_dir / "NLFS_2024Q1.csv",
-        nlfs_q2_csv=preprocessed_dir / "NLFS_2024Q2.csv",
+        nlfs_validated_csv=preprocessed_dir / "NLFS_2024Q1.csv",
+        nlfs_prevalidated_csv=preprocessed_dir / "NLFS_2024Q2.csv",
         query_isco_file=query_dir / "query_isco.csv",
         query_isic_file=query_dir / "query_isic.csv",
         search_results_isco_file=outputs_dir / "search_results_isco.csv",
@@ -51,7 +51,7 @@ def make_app_config(tmp_path: Path, include_outputs_dir: bool = True) -> AppConf
     )
 
 
-def write_minimal_q1(path: Path) -> None:
+def write_minimal_validated(path: Path) -> None:
     frame = pd.DataFrame(
         [
             {
@@ -89,7 +89,7 @@ def write_minimal_q1(path: Path) -> None:
     frame.to_csv(path, index=False)
 
 
-def write_minimal_q2(path: Path, include_id: bool) -> None:
+def write_minimal_prevalidated(path: Path, include_id: bool) -> None:
     rows = [
         {
             "id": "row-1",

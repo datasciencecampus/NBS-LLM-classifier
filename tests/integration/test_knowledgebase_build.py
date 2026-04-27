@@ -3,13 +3,13 @@ from __future__ import annotations
 import pandas as pd
 
 from nbs_llm_classifier.knowledgebase import build_knowledgebases
-from tests.helpers import make_app_config, write_minimal_codebooks, write_minimal_q1
+from tests.helpers import make_app_config, write_minimal_codebooks, write_minimal_validated
 
 
 def test_build_knowledgebases_writes_expected_dictionary_files(tmp_path):
     config = make_app_config(tmp_path)
     write_minimal_codebooks(config.paths.isco_xlsx, config.paths.isic_xlsx)
-    write_minimal_q1(config.paths.nlfs_q1_csv)
+    write_minimal_validated(config.paths.nlfs_validated_csv)
 
     summary = build_knowledgebases(config)
 

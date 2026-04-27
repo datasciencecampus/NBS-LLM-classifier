@@ -7,7 +7,12 @@ from pathlib import Path
 import pandas as pd
 
 import main as pipeline_main
-from tests.helpers import make_app_config, write_minimal_codebooks, write_minimal_q1, write_minimal_q2
+from tests.helpers import (
+    make_app_config,
+    write_minimal_codebooks,
+    write_minimal_prevalidated,
+    write_minimal_validated,
+)
 
 
 class FakeVectorStore:
@@ -55,8 +60,8 @@ def _write_config_json(root: Path) -> Path:
             "vector_store_dir": "vector_store",
             "isco_xlsx": "data/input/ISCO.xlsx",
             "isic_xlsx": "data/input/ISIC.xlsx",
-            "nlfs_q1_csv": "data/input/NLFS_2024Q1.csv",
-            "nlfs_q2_csv": "data/input/NLFS_2024Q2.csv",
+            "nlfs_validated_csv": "data/input/NLFS_2024Q1.csv",
+            "nlfs_prevalidated_csv": "data/input/NLFS_2024Q2.csv",
             "query_isco_file": "data/query/query_isco.csv",
             "query_isic_file": "data/query/query_isic.csv",
             "search_results_isco_file": "outputs/search_results_isco.csv",
@@ -73,8 +78,8 @@ def _write_config_json(root: Path) -> Path:
 def test_main_all_pipeline_smoke(tmp_path, monkeypatch):
     app_config = make_app_config(tmp_path, include_outputs_dir=True)
     write_minimal_codebooks(app_config.paths.isco_xlsx, app_config.paths.isic_xlsx)
-    write_minimal_q1(app_config.paths.nlfs_q1_csv)
-    write_minimal_q2(app_config.paths.nlfs_q2_csv, include_id=True)
+    write_minimal_validated(app_config.paths.nlfs_validated_csv)
+    write_minimal_prevalidated(app_config.paths.nlfs_prevalidated_csv, include_id=True)
 
     config_path = _write_config_json(tmp_path)
 

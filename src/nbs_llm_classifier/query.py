@@ -1,3 +1,5 @@
+"""Build ISCO and ISIC query files from prevalidated NLFS survey responses."""
+
 from __future__ import annotations
 
 import pandas as pd
@@ -10,16 +12,18 @@ def build_queries(
     config: AppConfig,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
+    """Create ISCO and ISIC query CSV files from the prevalidated NLFS dataset."""
     if reporter:
         reporter.step(
             stage="query",
             current=1,
             total=4,
-            message="loading Q2 pre-processed data",
+            message="loading prevalidated data",
         )
-    q2 = pd.read_csv(config.paths.nlfs_q2_csv, dtype=str)
-    if "id" not in q2.columns:
-        q2 = q2.assign(id=range(len(q2)))
+    prevalidated_data = pd.read_csv(config.paths.nlfs_prevalidated_csv, dtype=str)
+    if "id" not in prevalidated_data.columns:
+        # Preserve upstream ids when present; only synthesize sequential ids as fallback.
+        prevalidated_data = prevalidated_data.assign(id=range(len(prevalidated_data)))
 
     if reporter:
         reporter.step(
@@ -29,7 +33,7 @@ def build_queries(
             message="building ISCO query file",
         )
     config.paths.query_isco_file.parent.mkdir(parents=True, exist_ok=True)
-    query_isco = q2.copy()
+    query_isco = prevalidated_data.copy()
     query_isco["query"] = (
         query_isco["occupationname"].fillna("")
         + " "
@@ -50,7 +54,7 @@ def build_queries(
             message="building ISIC query file",
         )
     config.paths.query_isic_file.parent.mkdir(parents=True, exist_ok=True)
-    query_isic = q2.copy()
+    query_isic = prevalidated_data.copy()
     query_isic["query"] = (
         query_isic["activityname"].fillna("")
         + " "
@@ -64,7 +68,7 @@ def build_queries(
     )
 
     summary = {
-        "rows": len(q2),
+        "rows": len(prevalidated_data),
         "query_isco_file": config.paths.query_isco_file.name,
         "query_isic_file": config.paths.query_isic_file.name,
     }

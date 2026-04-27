@@ -1,3 +1,5 @@
+"""Create embedding vectorisers and build vector stores for search."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -12,12 +14,17 @@ from .utils import ProgressReporter
 
 
 class NormalizedHfVectoriser(HuggingFaceVectoriser):
+    """HuggingFace vectoriser wrapper that enforces L2 normalization."""
+
     def transform(self, texts: str | list[str]) -> np.ndarray:
+        """Vectorise text and return L2-normalized embeddings."""
         raw_embeddings = super().transform(texts)
+        # Normalization stabilizes cosine-similarity ranking across documents.
         return raw_embeddings / np.linalg.norm(raw_embeddings, axis=1, keepdims=True)
 
 
 def create_vectoriser(config: AppConfig) -> NormalizedHfVectoriser:
+    """Create the embedding vectoriser configured for this pipeline."""
     truststore.inject_into_ssl()
     return NormalizedHfVectoriser(
         model_name=config.model_name,
@@ -30,6 +37,7 @@ def build_vectorstores(
     config: AppConfig,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
+    """Build ISCO and ISIC vector stores from knowledge base CSV files."""
     if reporter:
         reporter.step(
             stage="vectorstore",

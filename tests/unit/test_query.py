@@ -3,12 +3,12 @@ from __future__ import annotations
 import pandas as pd
 
 from nbs_llm_classifier.query import build_queries
-from tests.helpers import make_app_config, write_minimal_q2
+from tests.helpers import make_app_config, write_minimal_prevalidated
 
 
 def test_query_preserves_existing_id(tmp_path):
     config = make_app_config(tmp_path)
-    write_minimal_q2(config.paths.nlfs_q2_csv, include_id=True)
+    write_minimal_prevalidated(config.paths.nlfs_prevalidated_csv, include_id=True)
 
     build_queries(config)
 
@@ -21,7 +21,7 @@ def test_query_preserves_existing_id(tmp_path):
 
 def test_query_generates_fallback_id_when_missing(tmp_path):
     config = make_app_config(tmp_path)
-    write_minimal_q2(config.paths.nlfs_q2_csv, include_id=False)
+    write_minimal_prevalidated(config.paths.nlfs_prevalidated_csv, include_id=False)
 
     build_queries(config)
 

@@ -6,7 +6,7 @@ import pandas as pd
 
 from nbs_llm_classifier.query import build_queries
 from nbs_llm_classifier.search import run_searches
-from tests.helpers import make_app_config, write_minimal_codebooks, write_minimal_q2
+from tests.helpers import make_app_config, write_minimal_codebooks, write_minimal_prevalidated
 
 
 class FakeVectorStore:
@@ -31,7 +31,7 @@ class FakeVectorStore:
 
 def test_build_queries_then_run_search_with_mock_vectorstore(tmp_path, monkeypatch):
     config = make_app_config(tmp_path)
-    write_minimal_q2(config.paths.nlfs_q2_csv, include_id=True)
+    write_minimal_prevalidated(config.paths.nlfs_prevalidated_csv, include_id=True)
     write_minimal_codebooks(config.paths.isco_xlsx, config.paths.isic_xlsx)
 
     build_queries(config)
