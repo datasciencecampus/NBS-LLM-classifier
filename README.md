@@ -79,13 +79,22 @@ style manual color:#2121,fill-opacity:0,stroke-width:0px
 ## Input and outputs
 
 ### Inputs
-The validated and pre-validated NLFS survey data needs to contain the following columns: `['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']`. `id` is a unique id that concatenates `interview_id`, `hhnumber`, `hhroster_id` and `jobnumber`.
+The official ISCO and ISIC coding schemes are stored in `data/input` alongside the validated and prevalidated NLFS survey data. 
+
+|Name |Source |URL |Type |Sheet| Columns |
+|:-----|:-----|:-----|:-----|:-----|:-----|
+|ISCO |ILO |[Link](https://www.ilo.org/ilostat-files/Documents/ISCO.xlsx) |.xlsx (81KB) |'ISCO_08' |`['unit', 'major_label', 'sub_major_label', 'minor_label', 'description']` | 
+|ISIC |ILO |[Link](http://www.ilo.org/ilostat-files/Documents/ISIC.xlsx) |.xlsx (108KB) |'ISIC_Rev_4' |`['section_label','division_label'.'group_label','description']` |
+|Validated NLFS |NBS |- |- |- |`['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']` |
+|Pre-validated NLFS |NBS |- |- |- |`['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']` |
+
+The `id` column in the NLFS data is a unique id that concatenates `interview_id`, `hhnumber`, `hhroster_id` and `jobnumber`.
 
 ### Intermediate outputs
-The NBS LLM Classifier pipeline will generate a number of intermediate files in the `data/knowledgebase` and `data/query` folders. These data are vectorised, stored and searched against in the vector store. 
+The NBS LLM Classifier pipeline will generate a number of intermediate files. The ISCO/ISIC knowledgebase and queries will be vectorised as `kb_isco.csv` and `kb_isic.csv` in `data/knowledgebase` and `query_isco.csv` and `query_isic.csv` in  `data/query`.
 
 ### Outputs
-The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `search_results_isco.csv`, `search_results_isic.csv`, and `search_results_combined.csv`. Each file will have the following columns:
+The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `search_results_isco.csv`, `search_results_isic.csv`, and `search_results_combined.csv`. The `search_results_combined.csv` file will have the following columns:
 
 |Variable |Description |Example value |
 |:-----|:-----|:-----|
@@ -122,8 +131,8 @@ The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `s
 
 ```json
 {
-    "model_name":  "sentence-transformers/all-MiniLM-L6-v2", # name of embedding model
-    "n_results":  15, # number of predictions returned
+    "model_name":  "sentence-transformers/all-MiniLM-L6-v2",
+    "n_results":  15,
     "paths":  {
                   "data_dir":  "data",
                   "raw_dir":  "data/input",
@@ -132,8 +141,8 @@ The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `s
                   "vector_store_dir":  "vector_store",
                   "isco_xlsx":  "data/input/ISCO.xlsx",
                   "isic_xlsx":  "data/input/ISIC.xlsx",
-                  "nlfs_validated_csv":  "data/input/NLFS_2024Q1.csv", # previously classified NLFS survey
-                  "nlfs_prevalidated_csv":  "data/input/NLFS_2024Q2.csv", # NLFS survey to be classified
+                  "nlfs_validated_csv":  "data/input/NLFS_2024Q1.csv",
+                  "nlfs_prevalidated_csv":  "data/input/NLFS_2024Q2.csv",
                   "query_isco_file":  "data/query/query_isco.csv",
                   "query_isic_file":  "data/query/query_isic.csv",
                   "search_results_isco_file":  "outputs/search_results_isco.csv",
