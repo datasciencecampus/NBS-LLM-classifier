@@ -28,7 +28,9 @@ pip install -r requirements.txt
 ## Repository structure
 ```
 ├── data/
-|   └── input                    # ISCO/ISIC coding schemes and NLFS survey data
+|   ├── input                    # ISCO/ISIC coding schemes and NLFS survey data
+|   ├── knowledgebase            # ISCO/ISIC knowledgebase
+|   └── query                    # ISCO/ISIC query
 ├── demo/                        # Example workflow
 |   └── data/ 
 │       └── input   
@@ -77,10 +79,13 @@ style manual color:#2121,fill-opacity:0,stroke-width:0px
 ## Input and outputs
 
 ### Inputs
-The NLFS survey data needs to contain the following columns: `['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']`. `id` is a unique id that concatenates `interview_id`, `hhnumber`, `hhroster_id` and `jobnumber`.
+The validated and pre-validated NLFS survey data needs to contain the following columns: `['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']`. `id` is a unique id that concatenates `interview_id`, `hhnumber`, `hhroster_id` and `jobnumber`.
+
+### Intermediate outputs
+The NBS LLM Classifier pipeline will generate a number of intermediate files in the `data/knowledgebase` and `data/query` folders. These data are vectorised, stored and searched against in the vector store. 
 
 ### Outputs
-The NBS LLM Classifier pipeline will output the following columns in `.csv` format.
+The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `search_results_isco.csv`, `search_results_isic.csv`, and `search_results_combined.csv`. Each file will have the following columns:
 
 |Variable |Description |Example value |
 |:-----|:-----|:-----|
@@ -113,7 +118,37 @@ The NBS LLM Classifier pipeline will output the following columns in `.csv` form
 
 ## Usage
 1. Save knowledgebase (`ISCO.xlsx`; `ISIC.xlsx` and validated NLFS survey data) and input query (pre-validated NLFS survey data) in the `data/input` folder.
-2. Check `config.json` includes appropriate LLM encoder model and points to the correct file paths.
+2. Edit the `config.json` file in the root folder. Please change the `model_name`, `n_results`, `nlfs_validated_csv` and `nlfs_prevalidated_csv` values if needed but leave the remaining values unchanged. 
+
+```json
+{
+    "model_name":  "sentence-transformers/all-MiniLM-L6-v2", # name of embedding model
+    "n_results":  15, # number of predictions returned
+    "paths":  {
+                  "data_dir":  "data",
+                  "raw_dir":  "data/input",
+                  "preprocessed_dir":  "data/input",
+                  "dictionaries_dir":  "data/knowledgebase",
+                  "vector_store_dir":  "vector_store",
+                  "isco_xlsx":  "data/input/ISCO.xlsx",
+                  "isic_xlsx":  "data/input/ISIC.xlsx",
+                  "nlfs_validated_csv":  "data/input/NLFS_2024Q1.csv", # previously classified NLFS survey
+                  "nlfs_prevalidated_csv":  "data/input/NLFS_2024Q2.csv", # NLFS survey to be classified
+                  "query_isco_file":  "data/query/query_isco.csv",
+                  "query_isic_file":  "data/query/query_isic.csv",
+                  "search_results_isco_file":  "outputs/search_results_isco.csv",
+                  "search_results_isic_file":  "outputs/search_results_isic.csv",
+                  "kb_isco_file":  "data/knowledgebase/kb_isco.csv",
+                  "kb_isic_file":  "data/knowledgebase/kb_isic.csv"
+              }
+}
+```
+
+- `model_name`: The embedding model defaults to [Sentence Transformers's](https://huggingface.co/sentence-transformers) [`all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) but you can just swap out the name for an alternative model from Hugging Face. In testing we have found that [Nomic-AI's](https://huggingface.co/nomic-ai) [`nomic-embed-text-v1.5`](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5) performs very well.
+- `n_results`: You can choose the number of top results to return for each query. 15 is the maximum that the tool can return.
+- `nlfs_validated_csv`: Link to the clerically coded - 'gold standard' - NLFS reponses that will be added to the knowledgebase. 
+- `nlfs_prevalidated_csv`: Link to the NLFS responses that need to be classified to ISCO/ISIC 4-digit codes.
+
 3. Run `src/main.py` in the command-line interface.
 
 ```bash
@@ -123,7 +158,7 @@ python src/main.py all
 If you want to run a particular step of the pipeline swap out `all` for `knowledgebase`, `vectorstore`, `query`, `search` or `evaluate`.
 
 4. Check accuracy and coverage metrics.
-5. Merge `outputs/search_results.csv` file with raw data using joining variable.
+5. Merge files in `/outputs` with raw data using joining variable.
 6. Classify data by:
    a. *Partial automation + manual/semi-automated coding*. Cases can be automatically classified where the pre-validated code matches 'Prediction 1'. The remaining cases can be classified using the top-3 predicted codes.
    b. *Semi-automated coding*. The candidate ISCO/ISIC codes predicted by the model can be used to guide manual coding.
