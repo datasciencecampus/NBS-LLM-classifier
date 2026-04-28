@@ -83,15 +83,15 @@ The official ISCO and ISIC coding schemes are stored in `data/input` alongside t
 
 |Name |Source |URL |Type |Sheet| Columns |
 |:-----|:-----|:-----|:-----|:-----|:-----|
-|ISCO |ILO |[Link](https://www.ilo.org/ilostat-files/Documents/ISCO.xlsx) |.xlsx (81KB) |'ISCO_08' |`['unit', 'major_label', 'sub_major_label', 'minor_label', 'description']` | 
-|ISIC |ILO |[Link](http://www.ilo.org/ilostat-files/Documents/ISIC.xlsx) |.xlsx (108KB) |'ISIC_Rev_4' |`['section_label','division_label'.'group_label','description']` |
+|ISCO |ILO |[Link](https://www.ilo.org/ilostat-files/Documents/ISCO.xlsx) |.xlsx (81KB) |'ISCO_08' |`['major_label','sub_major_label','minor_label','unit','description']` | 
+|ISIC |ILO |[Link](http://www.ilo.org/ilostat-files/Documents/ISIC.xlsx) |.xlsx (108KB) |'ISIC_Rev_4' |`['section_label','division_label','group_label','description','4-digits ']` |
 |Validated NLFS |NBS |- |- |- |`['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']` |
 |Pre-validated NLFS |NBS |- |- |- |`['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']` |
 
 The `id` column in the NLFS data is a unique id that concatenates `interview_id`, `hhnumber`, `hhroster_id` and `jobnumber`.
 
 ### Intermediate outputs
-The NBS LLM Classifier pipeline will generate a number of intermediate files. The ISCO/ISIC knowledgebase and queries will be vectorised as `kb_isco.csv` and `kb_isic.csv` in `data/knowledgebase` and `query_isco.csv` and `query_isic.csv` in  `data/query`.
+The NBS LLM Classifier pipeline will generate a number of intermediate files. The ISCO/ISIC knowledgebase and queries will be vectorised as `kb_isco.csv` and `kb_isic.csv` in `data/knowledgebase` and `query_isco.csv` and `query_isic.csv` in  `data/query`. The corresponding vector stores are saved in `vector_store/isco` and `vector_store/isic`.
 
 ### Outputs
 The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `search_results_isco.csv`, `search_results_isic.csv`, and `search_results_combined.csv`. The `search_results_combined.csv` file will have the following columns:
@@ -126,7 +126,7 @@ The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `s
 <br />If the Top-1 prediction matches the pre-validated 4-digit ISCO or ISIC code these will be autocoded. The remaining cases can be manually coded using the Top-1:3 predicted 4-digit codes. The manually coded cases can be added to the existing knowledgebase.
 
 ## Usage
-1. Save knowledgebase (`ISCO.xlsx`; `ISIC.xlsx` and validated NLFS survey data) and input query (pre-validated NLFS survey data) in the `data/input` folder.
+1. Save source input files (`ISCO.xlsx`, `ISIC.xlsx`, validated and pre-validated NLFS survey data) in the `data/input` folder.
 2. Edit the `config.json` file in the root folder. Please change the `model_name`, `n_results`, `nlfs_validated_csv` and `nlfs_prevalidated_csv` values if needed but leave the remaining values unchanged. 
 
 ```json
@@ -154,7 +154,7 @@ The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `s
 ```
 
 - `model_name`: The embedding model defaults to [Sentence Transformers's](https://huggingface.co/sentence-transformers) [`all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) but you can just swap out the name for an alternative model from Hugging Face. In testing we have found that [Nomic-AI's](https://huggingface.co/nomic-ai) [`nomic-embed-text-v1.5`](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5) performs very well.
-- `n_results`: You can choose the number of top results to return for each query. 15 is the maximum that the tool can return.
+- `n_results`: You can choose between 1 and 15 top results to return for each query. 15 is the default value.
 - `nlfs_validated_csv`: Link to the clerically coded - 'gold standard' - NLFS reponses that will be added to the knowledgebase. 
 - `nlfs_prevalidated_csv`: Link to the NLFS responses that need to be classified to ISCO/ISIC 4-digit codes.
 
