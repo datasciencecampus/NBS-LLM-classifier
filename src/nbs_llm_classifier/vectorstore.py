@@ -36,7 +36,18 @@ def build_vectorstores(
     config: AppConfig,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
-    """Build ISCO and ISIC vector stores from knowledge base CSV files."""
+    """Build ISCO and ISIC vector stores from knowledge-base CSV files.
+
+    File inputs from ``config.paths``:
+    - Reads ``kb_isco_file`` and ``kb_isic_file``.
+    - Knowledge-base CSVs are expected to expose ``label`` and ``text`` columns for
+      indexing.
+
+    File outputs:
+    - Ensures ``vector_store_dir`` exists.
+    - Writes vector-store artifacts to ``vector_store_dir/isco`` and
+      ``vector_store_dir/isic`` (overwriting existing artifacts).
+    """
     if reporter:
         reporter.step(
             stage="vectorstore",

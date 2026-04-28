@@ -14,7 +14,17 @@ from .vectorstore import create_vectoriser
 
 
 def _combine_ranked_results(search_results: pd.DataFrame) -> pd.DataFrame:
-    """Collapse raw search hits into top-3 predictions per query id."""
+    """Collapse raw search hits into top-3 predictions per query id.
+
+    Expected input columns:
+    - ``query_id``: query identifier.
+    - ``doc_label``: predicted code label.
+    - ``score``: similarity score for each hit.
+
+    Returns:
+    - DataFrame with ``query_id``, ``pred1``, ``score``, and optional ``pred2`` and
+      ``pred3`` columns when enough unique labels exist per query.
+    """
     scores = (
         search_results[["query_id", "doc_label", "score"]]
         .groupby(["query_id", "doc_label"])["score"]
@@ -60,7 +70,21 @@ def _run_search(
     label: str,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
-    """Run a single ISCO or ISIC search flow and write its output CSV."""
+    """Run one ISCO or ISIC search flow and write its output CSV.
+
+    File inputs:
+    - Reads ``query_file`` (normally one of ``config.paths.query_isco_file`` or
+      ``config.paths.query_isic_file``) and requires columns ``id``, ``query``, and
+      ``prevalidated``.
+    - Reads taxonomy descriptions from ``config.paths.isco_xlsx`` (sheet ``ISCO_08``)
+      or ``config.paths.isic_xlsx`` (sheet ``ISIC_Rev_4``), depending on the query
+      file being processed.
+
+    File outputs:
+    - Writes ``output_file`` CSV containing query metadata, top predictions
+      (``pred1``-``pred3``), human-readable labels (``pred1label``-``pred3label``),
+      and ``match_top_1``.
+    """
     if reporter:
         reporter.step(
             stage="search",
@@ -130,7 +154,18 @@ def run_searches(
     config: AppConfig,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
-    """Run ISCO and ISIC vector searches and write combined outputs."""
+    """Run ISCO and ISIC vector searches and write stage outputs.
+
+    File inputs from ``config.paths``:
+    - Loads vector stores from ``vector_store_dir/isco`` and ``vector_store_dir/isic``.
+    - Reads query CSVs from ``query_isco_file`` and ``query_isic_file``.
+
+    File outputs:
+    - Writes per-domain search outputs to ``search_results_isco_file`` and
+      ``search_results_isic_file``.
+    - Writes a merged result file named ``search_results_combined.csv`` in the same
+      directory as ``search_results_isco_file``.
+    """
     if reporter:
         reporter.step(
             stage="search",
@@ -218,7 +253,22 @@ def _combine_search_outputs(
     isic_file: Path,
     output_file: Path,
 ) -> None:
-    """Merge ISCO and ISIC search outputs into one combined result file."""
+    """Merge ISCO and ISIC search outputs into one combined result file.
+
+    File inputs:
+    - Reads ``isco_file`` and ``isic_file`` CSVs.
+
+    Expected input columns:
+    - Both files must include ``id``.
+    - ``jobnumber`` is optional but used as an additional join key when present in
+      both files.
+    - Domain-specific columns such as ``query_id``, ``query``, ``prevalidated``,
+      ``pred1``-``pred3``, ``pred1label``-``pred3label``, ``score``, and
+      ``match_top_1`` are renamed when present.
+
+    File outputs:
+    - Writes merged and reordered rows to ``output_file``.
+    """
     isco_results = pd.read_csv(isco_file, dtype=str)
     isic_results = pd.read_csv(isic_file, dtype=str)
 

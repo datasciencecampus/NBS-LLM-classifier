@@ -13,7 +13,16 @@ from .utils import ProgressReporter
 
 
 def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> float:
-    """Compute top-1 and threshold metrics, then render the evaluation plot."""
+    """Compute top-1 and threshold metrics, then render the evaluation plot.
+
+    Expected input columns:
+    - ``pred1``: top predicted code.
+    - ``prevalidated``: reference code for comparison.
+    - ``score``: similarity score used for threshold sweeps.
+
+    Outputs:
+    - Prints top-1 summary text and renders a matplotlib/seaborn figure.
+    """
     top1_accuracy = (
         search_results["pred1"] == search_results["prevalidated"]
     ).mean() * 100
@@ -88,7 +97,15 @@ def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> float:
 
 
 def _coerce_results(search_results: pd.DataFrame) -> pd.DataFrame:
-    """Normalize result column types used by evaluation calculations."""
+    """Normalize result column types used by evaluation calculations.
+
+    Expected input columns:
+    - ``pred1``, ``prevalidated``, and ``score``.
+
+    Returns:
+    - Copy of ``search_results`` with ``pred1`` and ``prevalidated`` coerced to
+      string and ``score`` coerced to numeric.
+    """
     coerced = search_results.copy()
     coerced["pred1"] = coerced["pred1"].astype(str)
     coerced["prevalidated"] = coerced["prevalidated"].astype(str)
@@ -100,7 +117,17 @@ def evaluate_search_results(
     config: AppConfig,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
-    """Evaluate ISCO/ISIC search outputs and return top-1 accuracy metrics."""
+    """Evaluate ISCO/ISIC search outputs and return top-1 accuracy metrics.
+
+    File inputs from ``config.paths``:
+    - Reads ``search_results_isco_file`` and ``search_results_isic_file``.
+
+    Expected columns in both files:
+    - ``pred1``, ``prevalidated``, and ``score``.
+
+    Outputs::
+    - Produces one evaluation plot per domain (ISCO and ISIC).
+    """
     if reporter:
         reporter.step(
             stage="evaluate",

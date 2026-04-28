@@ -12,7 +12,25 @@ def build_queries(
     config: AppConfig,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
-    """Create ISCO and ISIC query CSV files from the prevalidated NLFS dataset."""
+    """Create ISCO and ISIC query CSV files from prevalidated NLFS responses.
+
+    File inputs from ``config.paths``:
+    - Reads ``nlfs_prevalidated_csv``.
+
+    Expected input columns in ``nlfs_prevalidated_csv``:
+    - Required for ISCO query generation: ``occupationname``,
+      ``occupationtasksduties``, and ``isco``.
+    - Required for ISIC query generation: ``activityname``,
+      ``activitygoodsservices``, and ``isic``.
+    - ``id`` is optional; if missing, sequential ids are synthesized.
+    - ``jobnumber`` is expected because it is written to both outputs.
+
+    File outputs:
+    - Ensures parent directories for ``query_isco_file`` and ``query_isic_file``
+      exist.
+    - Writes both CSVs with columns ``id``, ``jobnumber``, ``query``, and
+      ``prevalidated``.
+    """
     if reporter:
         reporter.step(
             stage="query",

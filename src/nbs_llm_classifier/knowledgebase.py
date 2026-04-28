@@ -11,7 +11,17 @@ from .utils import ProgressReporter
 
 
 def _build_isco_frame(isco_xlsx: Path, validated_csv: Path) -> pd.DataFrame:
-    """Construct the ISCO knowledge base dataframe from classification schemes and NLFS validated data."""
+    """Construct ISCO knowledge-base rows from taxonomy and validated survey data.
+
+    Reads:
+    - ``isco_xlsx`` sheet ``ISCO_08`` with columns ``unit``, ``major_label``,
+      ``sub_major_label``, ``minor_label``, and ``description``.
+    - ``validated_csv`` with columns ``occupationname``,
+      ``occupationtasksduties``, and ``isco`` (plus identifier columns).
+
+    Returns:
+    - DataFrame containing exactly ``label`` and ``text`` columns.
+    """
     isco = pd.read_excel(isco_xlsx, sheet_name="ISCO_08", dtype=str)
     isco["label"] = isco["unit"]
     text_cols = ["major_label", "sub_major_label", "minor_label", "description"]
@@ -44,7 +54,17 @@ def _build_isco_frame(isco_xlsx: Path, validated_csv: Path) -> pd.DataFrame:
 
 
 def _build_isic_frame(isic_xlsx: Path, validated_csv: Path) -> pd.DataFrame:
-    """Construct the ISIC knowledge base dataframe from classification schemes and NLFS validated data."""
+    """Construct ISIC knowledge-base rows from taxonomy and validated survey data.
+
+    Reads:
+    - ``isic_xlsx`` sheet ``ISIC_Rev_4`` with columns ``4-digits ``,
+      ``section_label``, ``division_label``, ``group_label``, and ``description``.
+    - ``validated_csv`` with columns ``activityname``,
+      ``activitygoodsservices``, and ``isic`` (plus identifier columns).
+
+    Returns:
+    - DataFrame containing exactly ``label`` and ``text`` columns.
+    """
     isic = pd.read_excel(isic_xlsx, sheet_name="ISIC_Rev_4", dtype=str)
     isic["label"] = isic["4-digits "].astype(str).str.zfill(4)
     text_cols = ["section_label", "division_label", "group_label", "description"]
@@ -79,7 +99,17 @@ def build_knowledgebases(
     config: AppConfig,
     reporter: ProgressReporter | None = None,
 ) -> dict[str, object]:
-    """Build and persist ISCO and ISIC knowledge base CSV files."""
+    """Build and persist ISCO and ISIC knowledge-base CSV files.
+
+    File inputs from ``config.paths``:
+    - ``isco_xlsx`` and ``isic_xlsx`` classification workbooks.
+    - ``nlfs_validated_csv`` validated NLFS responses.
+
+    File outputs and side effects:
+        - Ensures the configured knowledge-base output directory
+    - Writes ``kb_isco_file`` and ``kb_isic_file`` CSVs with ``label`` and ``text``
+      columns.
+    """
     if reporter:
         reporter.step(
             stage="knowledgebase",
