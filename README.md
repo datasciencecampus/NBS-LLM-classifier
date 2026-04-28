@@ -224,3 +224,6 @@ At the [Data Science Campus](https://datasciencecampus.ons.gov.uk/about-us/) we 
 
 ## License
 See [LICENSE](LICENSE) for details.
+
+## AI declaration
+AI has been involved in the production of this content.
