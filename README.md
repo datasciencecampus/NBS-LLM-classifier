@@ -91,7 +91,7 @@ The official ISCO and ISIC coding schemes are stored in `data/input` alongside t
 The `id` column in the NLFS data is a unique id that concatenates `interview_id`, `hhnumber`, `hhroster_id` and `jobnumber`.
 
 ### Intermediate outputs
-The NBS LLM Classifier pipeline will generate a number of intermediate files. The ISCO/ISIC knowledgebase and queries will be vectorised as `kb_isco.csv` and `kb_isic.csv` in `data/knowledgebase` and `query_isco.csv` and `query_isic.csv` in  `data/query`. The corresponding vector stores are saved in `vector_store/isco` and `vector_store/isic`.
+The pipeline generates intermediate CSV files: `kb_isco.csv` and `kb_isic.csv` in `data/knowledgebase`, and `query_isco.csv` and `query_isic.csv` in `data/query`. These CSV files are then vectorised, and the resulting vector store artifacts are saved in `vector_store/isco` and `vector_store/isic`.
 
 ### Outputs
 The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `search_results_isco.csv`, `search_results_isic.csv`, and `search_results_combined.csv`. The `search_results_combined.csv` file will have the following columns:
@@ -154,7 +154,7 @@ The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `s
 ```
 
 - `model_name`: The embedding model defaults to [Sentence Transformers's](https://huggingface.co/sentence-transformers) [`all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) but you can just swap out the name for an alternative model from Hugging Face. In testing we have found that [Nomic-AI's](https://huggingface.co/nomic-ai) [`nomic-embed-text-v1.5`](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5) performs very well.
-- `n_results`: You can choose between 1 and 15 top results to return for each query. 15 is the default value.
+- `n_results`: Number of top results to return for each query. The default value is 15.
 - `nlfs_validated_csv`: Link to the clerically coded - 'gold standard' - NLFS reponses that will be added to the knowledgebase. 
 - `nlfs_prevalidated_csv`: Link to the NLFS responses that need to be classified to ISCO/ISIC 4-digit codes.
 
