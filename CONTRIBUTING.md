@@ -23,15 +23,15 @@ Thank you for your interest in contributing to the NBS LLM Classifier project! W
 1. **Create a new branch** from `main` (e.g., `feature/my-new-feature` or `bugfix/fix-typo`).
 2. Make your changes, following the style conventions in the codebase.
 3. **Install and use pre-commit hooks** (see below) to help check your code for quality and formatting before committing.
-4. Ensure all tests pass locally by running `pytest`.
+4. Ensure all tests pass locally by running `python -m pytest`.
 5. Open a pull request with a clear title and detailed description.
 6. Respond to any review comments and update your PR as needed.
 
 ## Code Style, Quality & Pre-commit Hooks
 - Please follow the existing code style configured in `pyproject.toml`.
 - `requirements.txt` contains runtime dependencies for the pipeline.
-- `requirements-dev.txt` contains additional contributor tools, including pre-commit and Ruff. It should be installed after `requirements.txt`, not instead of it.
-- `pyproject.toml` stores the Ruff linting and formatting configuration.
+- `requirements-dev.txt` contains additional contributor tools, including pre-commit, pytest and Ruff. It should be installed after `requirements.txt`, not instead of it.
+- `pyproject.toml` stores the Ruff linting/formatting configuration and pytest discovery settings.
 - **Pre-commit hooks are required**! They help catch formatting, linting, and quality issues before code is committed. This keeps the codebase clean and consistent for everyone.
 - To install pre-commit hooks, activate your virtual environment after installing `requirements.txt`, then run:
   ```sh
@@ -47,6 +47,10 @@ Thank you for your interest in contributing to the NBS LLM Classifier project! W
   ruff check .
   ruff check . --fix
   ruff format .
+  ```
+- To run the full test suite locally:
+  ```sh
+  python -m pytest
   ```
 - Write clear, concise commit messages.
 - Ensure your code is well-documented and tested.

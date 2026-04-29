@@ -107,8 +107,8 @@ def _coerce_results(search_results: pd.DataFrame) -> pd.DataFrame:
       string and ``score`` coerced to numeric.
     """
     coerced = search_results.copy()
-    coerced["pred1"] = coerced["pred1"].astype(str)
-    coerced["prevalidated"] = coerced["prevalidated"].astype(str)
+    coerced["pred1"] = coerced["pred1"].astype("string").fillna("")
+    coerced["prevalidated"] = coerced["prevalidated"].astype("string").fillna("")
     coerced["score"] = pd.to_numeric(coerced["score"], errors="coerce")
     return coerced
 
@@ -135,7 +135,9 @@ def evaluate_search_results(
             total=4,
             message="loading ISCO search results",
         )
-    isco_results = _coerce_results(pd.read_csv(config.paths.search_results_isco_file))
+    isco_results = _coerce_results(
+        pd.read_csv(config.paths.search_results_isco_file, dtype=str)
+    )
     if reporter:
         reporter.step(
             stage="evaluate",
@@ -156,7 +158,9 @@ def evaluate_search_results(
             total=4,
             message="loading ISIC search results",
         )
-    isic_results = _coerce_results(pd.read_csv(config.paths.search_results_isic_file))
+    isic_results = _coerce_results(
+        pd.read_csv(config.paths.search_results_isic_file, dtype=str)
+    )
     if reporter:
         reporter.step(
             stage="evaluate",

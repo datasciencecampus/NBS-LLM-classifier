@@ -75,10 +75,10 @@ def load_config(config_path: Path) -> AppConfig:
         query_isco_file=resolve("query_isco_file", "data/query/query_isco.csv"),
         query_isic_file=resolve("query_isic_file", "data/query/query_isic.csv"),
         search_results_isco_file=resolve(
-            "search_results_isco_file", "data/search_results_isco.csv"
+            "search_results_isco_file", "outputs/search_results_isco.csv"
         ),
         search_results_isic_file=resolve(
-            "search_results_isic_file", "data/search_results_isic.csv"
+            "search_results_isic_file", "outputs/search_results_isic.csv"
         ),
         kb_isco_file=resolve("kb_isco_file", "data/knowledgebase/kb_isco.csv"),
         kb_isic_file=resolve("kb_isic_file", "data/knowledgebase/kb_isic.csv"),
