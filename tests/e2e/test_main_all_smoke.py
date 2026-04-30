@@ -83,14 +83,22 @@ def test_main_all_pipeline_smoke(tmp_path, monkeypatch):
 
     config_path = _write_config_json(tmp_path)
 
-    monkeypatch.setattr("nbs_llm_classifier.vectorstore.create_vectoriser", lambda cfg: object())
-    monkeypatch.setattr("nbs_llm_classifier.search.create_vectoriser", lambda cfg: object())
+    monkeypatch.setattr(
+        "nbs_llm_classifier.vectorstore.create_vectoriser", lambda cfg: object()
+    )
+    monkeypatch.setattr(
+        "nbs_llm_classifier.search.create_vectoriser", lambda cfg: object()
+    )
     monkeypatch.setattr("nbs_llm_classifier.vectorstore.VectorStore", FakeVectorStore)
     monkeypatch.setattr("nbs_llm_classifier.search.VectorStore", FakeVectorStore)
     monkeypatch.setattr(
         "nbs_llm_classifier.evaluate._evaluate_and_plot",
         lambda search_results, subtitle: float(
-            round((search_results["pred1"] == search_results["prevalidated"]).mean() * 100, 2)
+            round(
+                (search_results["pred1"] == search_results["prevalidated"]).mean()
+                * 100,
+                2,
+            )
         ),
     )
 
@@ -109,5 +117,7 @@ def test_main_all_pipeline_smoke(tmp_path, monkeypatch):
     assert app_config.paths.search_results_isco_file.exists()
     assert app_config.paths.search_results_isic_file.exists()
 
-    combined = app_config.paths.search_results_isco_file.with_name("search_results_combined.csv")
+    combined = app_config.paths.search_results_isco_file.with_name(
+        "search_results_combined.csv"
+    )
     assert combined.exists()

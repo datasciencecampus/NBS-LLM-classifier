@@ -69,7 +69,9 @@ def load_config(config_path: Path) -> AppConfig:
         isco_xlsx=resolve("isco_xlsx", "data/input/ISCO.xlsx"),
         isic_xlsx=resolve("isic_xlsx", "data/input/ISIC.xlsx"),
         nlfs_validated_csv=resolve("nlfs_validated_csv", "data/input/NLFS_2024Q1.csv"),
-        nlfs_prevalidated_csv=resolve("nlfs_prevalidated_csv", "data/input/NLFS_2024Q2.csv"),
+        nlfs_prevalidated_csv=resolve(
+            "nlfs_prevalidated_csv", "data/input/NLFS_2024Q2.csv"
+        ),
         query_isco_file=resolve("query_isco_file", "data/query/query_isco.csv"),
         query_isic_file=resolve("query_isic_file", "data/query/query_isic.csv"),
         search_results_isco_file=resolve(
