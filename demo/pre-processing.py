@@ -178,6 +178,15 @@ q1_second = isic_q1_second[
 ]
 q1 = pd.concat([q1_main, q1_second], ignore_index=True)
 q1 = q1[q1[["isco", "isic"]].notnull().all(axis=1)]
+q1.rename(columns={"id7_hhnumber": "hhnumber"}, inplace=True)
+q1["id"] = (
+    q1["interview_id"]
+    + q1["hhnumber"].astype("int64").astype(str)
+    + q1["hhroster_id"].astype("int64").astype(str)
+    + q1["jobnumber"].astype("int64").astype(str)
+)
+col = q1.pop("id")
+q1.insert(0, "id", col)
 q1.to_csv("../data/input/NLFS_2024Q1.csv", index=False)
 
 # Nigeria Labour Force Survey Q2 2024
@@ -322,4 +331,13 @@ q2_second = isic_q2_second[
 ]
 q2 = pd.concat([q2_main, q2_second], ignore_index=True)
 q2 = q2[q2[["isco", "isic"]].notnull().all(axis=1)]
+q2.rename(columns={"id7_hhnumber": "hhnumber"}, inplace=True)
+q2["id"] = (
+    q2["interview_id"]
+    + q2["hhnumber"].astype("int64").astype(str)
+    + q2["hhroster_id"].astype("int64").astype(str)
+    + q2["jobnumber"].astype("int64").astype(str)
+)
+col = q2.pop("id")
+q2.insert(0, "id", col)
 q2.to_csv("../data/input/NLFS_2024Q2.csv", index=False)

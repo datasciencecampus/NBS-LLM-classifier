@@ -11,7 +11,13 @@ Details of the datasets used in this example are provided in the table below.
 | Nigeria Labour Force Survey Q1 2024 | Nigeria National Bureau of Statistics | [Link](https://microdata.nigerianstat.gov.ng/index.php/catalog/151) | .sav (294MB) |(c) 2024, National Bureau of Statistics |
 | Nigeria Labour Force Survey Q2 2024 | Nigeria National Bureau of Statistics | [Link](https://microdata.nigerianstat.gov.ng/index.php/catalog/152) | .sav (296MB) |(c) 2024, National Bureau of Statistics |
 
-Both the ISCO and the ISIC code schemes can be downloaded directly from the International Labour Organization website and stored in the `data/input` folder. However, you need to [register](https://microdata.nigerianstat.gov.ng/index.php/auth/register) on the NBS Microdata Catalog before you can download the NLFS data. Please download and save the NLFS datasets (`NLFS_2024Q1_INDIVIDUAL.sav` and `NLFS_2024Q2_INDIVIDUAL.sav`) in the `demo/` folder. Further pre-processing (see `pre-processing.py`) of the Nigeria Labour Force Survey (NLFS) data is required before it can be ingested into the pipeline. The script will create two CSV files (`NLFS_2024Q1.csv` and `NLFS_2024Q2.csv`) and store them in the `data/input` folder.
+Both the ISCO and the ISIC code schemes can be downloaded directly from the International Labour Organization website and stored in the `data/input` folder. However, you need to [register](https://microdata.nigerianstat.gov.ng/index.php/auth/register) on the NBS Microdata Catalog before you can download the NLFS data. Please download and save the NLFS datasets (`NLFS_2024Q1_INDIVIDUAL.sav` and `NLFS_2024Q2_INDIVIDUAL.sav`) in the `demo/` folder. Further pre-processing of the Nigeria Labour Force Survey (NLFS) data is required before it can be ingested into the pipeline. Open the command line and run:
+
+```bash
+cd demo && python pre-processing.py
+```
+
+The pre-processing script will create two CSV files (`NLFS_2024Q1.csv` and `NLFS_2024Q2.csv`) and store them in the `data/input` folder.
 
 ## Workflow
 
@@ -65,7 +71,7 @@ pip install -r requirements.txt
 The `config.json` file contains all of the file paths to the datasets needed in the demonstration.
 
 ```
-├── demo/
+├── data/
 |   └── input
 │       ├── ISCO.xlsx
 │       ├── ISIC.xlsx
