@@ -179,8 +179,8 @@ Please see `requirements.txt` for other runtime dependencies.
 
 ### Dependency and tooling files
 - `requirements.txt` contains the dependencies needed to run the pipeline.
-- `requirements-dev.txt` contains additional contributor tools such as pre-commit and Ruff. It does not replace `requirements.txt`.
-- `pyproject.toml` stores Python tool configuration. In this repository, it configures Ruff linting and formatting.
+- `requirements-dev.txt` contains additional contributor tools such as pre-commit, pytest and Ruff. It does not replace `requirements.txt`.
+- `pyproject.toml` stores Python tool configuration. In this repository, it configures Ruff linting, formatting and pytest discovery.
 
 ## Configuration
 
@@ -212,6 +212,22 @@ ruff format .
 ```
 
 **NOTE:** Pre-commit hooks execute Python, so it expects a working Python build.
+
+### Tests
+If approaching this project as a developer, install both the runtime and developer dependencies before running tests:
+
+```bash
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+Run the full test suite with:
+
+```bash
+python -m pytest
+```
+
+The test suite includes unit, integration, and end-to-end smoke tests under `tests/`.
 
 ## Contributing
 We welcome contributions from internal and NSO colleagues! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on raising issues, opening branches, and submitting pull requests.
