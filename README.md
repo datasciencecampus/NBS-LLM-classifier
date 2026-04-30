@@ -5,14 +5,14 @@ This is an implementation of the [ClassifAI](https://datasciencecampus.github.io
 
 ## Getting started
 
-**1. Clone the repository**    
+**1. Clone the repository**
 Open a terminal (Command Prompt) and run:
 ```bash
 git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
 cd NBS-LLM-classifier
 ```
 
-**2. Set up your environment**    
+**2. Set up your environment**
 Create and activate a virtual environment
 ```bash
 python -m venv venv
@@ -20,7 +20,7 @@ venv\Scripts\activate.bat # on Windows
 source venv/bin/activate # on a Mac
 ```
 
-Install the required dependencies    
+Install the required dependencies
 ```bash
 pip install -r requirements.txt
 ```
@@ -32,8 +32,8 @@ pip install -r requirements.txt
 |   ├── knowledgebase            # ISCO/ISIC knowledgebase
 |   └── query                    # ISCO/ISIC query
 ├── demo/                        # Example workflow
-|   └── data/ 
-│       └── input   
+|   └── data/
+│       └── input
 ├── docs/                        # Additional documentation
 ├── outputs/                     # Search results
 ├── src/                         # Source code
@@ -71,19 +71,19 @@ style manual color:#2121,fill-opacity:0,stroke-width:0px
 ```
 
 1. The ISCO and ISIC classification schemes are combined with 4-digit coded occupations and economic activities from the Nigeria Labour Force Survey (NLFS) to create a knowledgebase.
-2. These labelled examples are embedded as vectors and saved alongside the original free text as a VectorStore object. The transformation of text into numerical representations is handled by a vectoriser model. 
-3. Query data from a different wave of the NLFS is also embedded as a vector and searched against the labelled examples in the VectorStore. 
-4. The semantic similarity or distance between each vector query and knowledgebase entry is then calculated. 
+2. These labelled examples are embedded as vectors and saved alongside the original free text as a VectorStore object. The transformation of text into numerical representations is handled by a vectoriser model.
+3. Query data from a different wave of the NLFS is also embedded as a vector and searched against the labelled examples in the VectorStore.
+4. The semantic similarity or distance between each vector query and knowledgebase entry is then calculated.
 5. The nearest N labelled examples are returned with their distance. <br />
 
 ## Input and outputs
 
 ### Inputs
-The official ISCO and ISIC coding schemes are stored in `data/input` alongside the validated and prevalidated NLFS survey data. 
+The official ISCO and ISIC coding schemes are stored in `data/input` alongside the validated and prevalidated NLFS survey data.
 
 |Name |Source |URL |Type |Sheet| Columns |
 |:-----|:-----|:-----|:-----|:-----|:-----|
-|ISCO |ILO |[Link](https://www.ilo.org/ilostat-files/Documents/ISCO.xlsx) |.xlsx (81KB) |'ISCO_08' |`['major_label','sub_major_label','minor_label','unit','description']` | 
+|ISCO |ILO |[Link](https://www.ilo.org/ilostat-files/Documents/ISCO.xlsx) |.xlsx (81KB) |'ISCO_08' |`['major_label','sub_major_label','minor_label','unit','description']` |
 |ISIC |ILO |[Link](http://www.ilo.org/ilostat-files/Documents/ISIC.xlsx) |.xlsx (108KB) |'ISIC_Rev_4' |`['section_label','division_label','group_label','description','4-digits ']` |
 |Validated NLFS |NBS |- |- |- |`['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']` |
 |Pre-validated NLFS |NBS |- |- |- |`['id','interview_id','hhnumber','hhroster_id','jobnumber','occupationname','occupationtasksduties','isco','activityname','activitygoodsservices','isic']` |
@@ -107,18 +107,18 @@ The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `s
 |`isco_pred1_label` |Top-1 4-digit ISCO prediction with label|8322 Car, Taxi and Van Drivers |
 |`isco_pred1_score` |Top-1 4-digit ISCO prediction similarity score |0.828753829 |
 |`isco_match_top_1` |Top-1 4-digit ISCO prediction matches pre-validated code |TRUE |
-|`isco_pred2` |Top-2 4-digit ISCO prediction |8331 | 
+|`isco_pred2` |Top-2 4-digit ISCO prediction |8331 |
 |`isco_pred2_label` |Top-2 4-digit ISCO prediction with label |8331 Bus and Tram Drivers |
-|`isco_pred3` |Top-3 4-digit ISCO prediction |8321 | 
+|`isco_pred3` |Top-3 4-digit ISCO prediction |8321 |
 |`isco_pred3_label` |Top-3 4-digit ISCO prediction |8321 Motorcycle Drivers|
-|`isic_query_id` |Joining variable |00090a7060624433b7b8f9edf3490878111 | 
+|`isic_query_id` |Joining variable |00090a7060624433b7b8f9edf3490878111 |
 |`isic_query` |Economic activity |filling and keeping record, answering phone calls, welcoming and graeting guests, purchase tools and materials answering and directing phone calls, managing offices resources and supplies and filling |
 |`isic_prevalidated` |Field interviewer recorded 4-digit ISIC code |8411 |
-|`isic_pred1` |Top-1 4-digit ISIC prediction |5510 | 
+|`isic_pred1` |Top-1 4-digit ISIC prediction |5510 |
 |`isic_pred1_label` |Top-1 4-digit ISIC prediction with label |5510 Short term accommodation activities |
 |`isic_pred1_score` |Top-1 4-digit ISIC prediction similarity score |0.65932399 |
 |`isic_match_top_1` |Top-1 4-digit ISIC prediction matches pre-validated code |FALSE |
-|`isic_pred2` |Top-2 4-digit ISIC prediction |8211 | 
+|`isic_pred2` |Top-2 4-digit ISIC prediction |8211 |
 |`isic_pred2_label` |Top-2 4-digit ISIC prediction with label |8211 Combined office administrative service activities |
 |`isic_pred3` |Top-3 4-digit ISIC prediction |5610 |
 |`isic_pred3_label` |Top-3 4-digit ISIC prediction with label |5610 Restaurants and mobile food service activities |
@@ -127,7 +127,7 @@ The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `s
 
 ## Usage
 1. Save source input files (`ISCO.xlsx`, `ISIC.xlsx`, validated and pre-validated NLFS survey data) in the `data/input` folder.
-2. Edit the `config.json` file in the root folder. Please change the `model_name`, `n_results`, `nlfs_validated_csv` and `nlfs_prevalidated_csv` values if needed but leave the remaining values unchanged. 
+2. Edit the `config.json` file in the root folder. Please change the `model_name`, `n_results`, `nlfs_validated_csv` and `nlfs_prevalidated_csv` values if needed but leave the remaining values unchanged.
 
 ```json
 {
@@ -155,7 +155,7 @@ The NBS LLM Classifier pipeline will output 3 files in the `outputs/` folder: `s
 
 - `model_name`: The embedding model defaults to [Sentence Transformers's](https://huggingface.co/sentence-transformers) [`all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) but you can just swap out the name for an alternative model from Hugging Face. In testing we have found that [Nomic-AI's](https://huggingface.co/nomic-ai) [`nomic-embed-text-v1.5`](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5) performs very well.
 - `n_results`: Number of top results to return for each query. The default value is 15.
-- `nlfs_validated_csv`: Link to the clerically coded - 'gold standard' - NLFS reponses that will be added to the knowledgebase. 
+- `nlfs_validated_csv`: Link to the clerically coded - 'gold standard' - NLFS reponses that will be added to the knowledgebase.
 - `nlfs_prevalidated_csv`: Link to the NLFS responses that need to be classified to ISCO/ISIC 4-digit codes.
 
 3. Run `src/main.py` in the command-line interface.

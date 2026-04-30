@@ -30,6 +30,8 @@ def test_combine_ranked_results_builds_top3_correctly():
 def test_format_code_label_handles_missing_values():
     descriptions = {"5211": "Stall and Market Salespersons"}
 
-    assert _format_code_label("5211", descriptions) == "5211 Stall and Market Salespersons"
+    assert (
+        _format_code_label("5211", descriptions) == "5211 Stall and Market Salespersons"
+    )
     assert _format_code_label("9999", descriptions) == "9999"
     assert _format_code_label(None, descriptions) == ""

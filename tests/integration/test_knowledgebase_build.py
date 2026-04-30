@@ -3,7 +3,11 @@ from __future__ import annotations
 import pandas as pd
 
 from nbs_llm_classifier.knowledgebase import build_knowledgebases
-from tests.helpers import make_app_config, write_minimal_codebooks, write_minimal_validated
+from tests.helpers import (
+    make_app_config,
+    write_minimal_codebooks,
+    write_minimal_validated,
+)
 
 
 def test_build_knowledgebases_writes_expected_dictionary_files(tmp_path):
