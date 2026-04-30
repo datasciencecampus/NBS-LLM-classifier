@@ -3,7 +3,7 @@
 We welcome improvements, bug fixes, or new features to the NBS-LLM-classifier. How to contribute to the repo will depend on whether you have access to the repository.
 
 ## Contributors with repository access
-Clone the repo and create a branch from 'main`.
+Clone the repo and create a branch from `main`.
 
 1. Create a local copy of the remote repository
 
@@ -17,20 +17,25 @@ git clone https://github.com/datasciencecampus/NBS-LLM-classifier.git
 git switch -c <newbranch>
 ```
 
-3. Make changes, stage and commit
+3. Make changes, run local checks, stage, and commit
+
 ```bash
+pre-commit run --all-files
 git add .
 git commit -m "Commit message"
 ```
 
-4. Push new branch branch to remote
+If pre-commit changes any files, review the changes, then stage and commit them.
+
+4. Push the new branch to the remote
+
 ```bash
 git push -u origin <newbranch>
 ```
 
 5. Open a pull request in GitHub
 
-See also: [CONTRIBUTING.md](CONTRIBUTING.md) in the root folder.
+See also: [CONTRIBUTING.md](../CONTRIBUTING.md) in the root folder.
 
 ## Contributors without repository access
 Fork the repository and open a pull request.
@@ -75,11 +80,20 @@ To create and check out a new branch run:
 git switch -c <newbranch>
 ```
 
-Then commit and push your changes to GitHub.
+Then make changes, run local checks, commit, and push your branch to GitHub.
+
+```bash
+pre-commit run --all-files
+git add .
+git commit -m "Commit message"
+git push -u origin <newbranch>
+```
+
+If pre-commit changes any files, review the changes, then stage and commit them.
 
 See also: [Creating and deleting branches within your repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-and-deleting-branches-within-your-repository)
 
 4. Open a Pull Request
-Visit your fork of NBS-LLM-classifier on GitHub, select your <newbranch>, and click the pull request button.
+Visit your fork of NBS-LLM-classifier on GitHub, select your branch, and click the pull request button.
 
 See also: [Creating a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request)
