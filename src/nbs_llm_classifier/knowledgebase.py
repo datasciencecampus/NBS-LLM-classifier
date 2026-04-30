@@ -42,10 +42,14 @@ def _build_isco_frame(isco_xlsx: Path, validated_csv: Path) -> pd.DataFrame:
     )
     validated_isco["label"] = validated_isco["isco"].str.extract(r"(\d+)")
     validated_isco["text"] = (
-        validated_isco["occupationname"].fillna("")
-        + " "
-        + validated_isco["occupationtasksduties"].fillna("")
-    ).str.strip().str.lower()
+        (
+            validated_isco["occupationname"].fillna("")
+            + " "
+            + validated_isco["occupationtasksduties"].fillna("")
+        )
+        .str.strip()
+        .str.lower()
+    )
 
     # Blend taxonomy descriptions with observed survey phrasing for recall.
     kb_isco = pd.concat([isco, validated_isco[["label", "text"]]], ignore_index=True)
@@ -83,12 +87,18 @@ def _build_isic_frame(isic_xlsx: Path, validated_csv: Path) -> pd.DataFrame:
         ],
         dtype=str,
     )
-    validated_isic["label"] = validated_isic["isic"].str.extract(r"(\d+)")[0].str.zfill(4)
+    validated_isic["label"] = (
+        validated_isic["isic"].str.extract(r"(\d+)")[0].str.zfill(4)
+    )
     validated_isic["text"] = (
-        validated_isic["activityname"].fillna("")
-        + " "
-        + validated_isic["activitygoodsservices"].fillna("")
-    ).str.strip().str.lower()
+        (
+            validated_isic["activityname"].fillna("")
+            + " "
+            + validated_isic["activitygoodsservices"].fillna("")
+        )
+        .str.strip()
+        .str.lower()
+    )
 
     kb_isic = pd.concat([isic, validated_isic[["label", "text"]]], ignore_index=True)
     kb_isic = kb_isic.drop_duplicates(subset=["label", "text"], keep="first")

@@ -1,1 +1,1 @@
-- [Submitting changes](submitting-changes.md)
+- [Contributing to the repo](contributing-to-the-repo.md)
