@@ -1,4 +1,7 @@
 ### Project structure ###
+data/input/NLFS_*.csv
+data/knowledgebase/*.csv
+data/query/*.csv
 outputs/*
 vector_store/*
 
@@ -9,6 +12,7 @@ vector_store/*
 
 *.Rproj
 
+*.sav
 *.html
 *.pdf
 *.zip
