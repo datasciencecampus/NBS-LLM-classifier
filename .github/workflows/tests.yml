@@ -10,8 +10,6 @@ jobs:
   pytest:
     name: Pytest
     runs-on: ubuntu-latest
-    env:
-      MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
 
     steps:
       - name: Check out repository
@@ -30,4 +28,6 @@ jobs:
           python -m pip install -r requirements-dev.txt
 
       - name: Run tests
+        env:
+          MPLCONFIGDIR: ${{ runner.temp }}/matplotlib
         run: python -m pytest
