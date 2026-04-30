@@ -1,4 +1,4 @@
-## Contributing to the NBS-LLM-classifier repo
+# Contributing to the NBS-LLM-classifier repo
 
 We welcome improvements, bug fixes, or new features to the NBS-LLM-classifier. How to contribute to the repo will depend on whether you have access to the repository.
 
