@@ -1,22 +1,21 @@
 # Demo
-
-We will demonstrate how to use the [NBS LLM classifier](https://github.com/datasciencecampus/NBS-LLM-classifier) pipeline by classifying free-text survey responses in the Nigeria Labour Force Survey to [ISCO](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-occupation/) occupational groups and [ISIC](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-economic-activities/) economic activities.
+We will demonstrate how to use the [NBS LLM classifier](https://github.com/datasciencecampus/NBS-LLM-classifier) pipeline by classifying free-text survey responses in the Nigeria Labour Force Survey (NLFS) to [ISCO](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-occupation/) occupational groups and [ISIC](https://ilostat.ilo.org/methods/concepts-and-definitions/classification-economic-activities/) economic activities.
 
 ## Data
-The following datasets will be used in this example:
+Details of the datasets used in this example are provided in the table below.
 
-|Name |Source |URL |Type |
-|:-----|:-----|:-----|:-----|
-| International Standard Classification of Occupations (ISCO) | International Labour Organization | [Link](https://www.ilo.org/ilostat-files/Documents/ISCO.xlsx) | .xlsx (81KB) |
-| International Standard Classification of Economic Activities (ISIC) | International Labour Organization | [Link](http://www.ilo.org/ilostat-files/Documents/ISIC.xlsx) | .xlsx (108KB) |
-| Nigeria Labour Force Survey Q1 2024 | Nigeria National Bureau of Statistics | [Link](https://microdata.nigerianstat.gov.ng/index.php/catalog/151) | .sav (294MB) |
-| Nigeria Labour Force Survey Q2 2024 | Nigeria National Bureau of Statistics | [Link](https://microdata.nigerianstat.gov.ng/index.php/catalog/152) | .sav (296MB) |
+|Name |Source |URL |Type |Licence |
+|:-----|:-----|:-----|:-----|:-----|
+| International Standard Classification of Occupations (ISCO-08) | International Labour Organization | [Link](https://www.ilo.org/ilostat-files/Documents/ISCO.xlsx) | .xlsx (81KB) | |
+| International Standard Classification of Economic Activities (ISIC Rev. 4) | International Labour Organization | [Link](http://www.ilo.org/ilostat-files/Documents/ISIC.xlsx) | .xlsx (108KB) | |
+| Nigeria Labour Force Survey Q1 2024 | Nigeria National Bureau of Statistics | [Link](https://microdata.nigerianstat.gov.ng/index.php/catalog/151) | .sav (294MB) |(c) 2024, National Bureau of Statistics |
+| Nigeria Labour Force Survey Q2 2024 | Nigeria National Bureau of Statistics | [Link](https://microdata.nigerianstat.gov.ng/index.php/catalog/152) | .sav (296MB) |(c) 2024, National Bureau of Statistics |
 
-The quarterly data from the Nigeria Labour Force Survey are a subset of those published on the [Microdata Catalog](https://microdata.nigerianstat.gov.ng/index.php/home). Only the columns `['interview_id,'id7_hhnumber','hhroster_id,'mjj1','mjj2a','mjj2b','mjj2cclean','sjj1a','sjj1b','sjj1cclean']` which refer to ISCO main and secondary jobs were retained. The data were restructured and stored in `.csv` files.
+Both the ISCO and the ISIC code schemes can be downloaded directly from the International Labour Organization website and stored in the `data/input` folder. However, you need to [register](https://microdata.nigerianstat.gov.ng/index.php/auth/register) on the NBS Microdata Catalog before you can download the NLFS data. Please download and save the NLFS datasets (`NLFS_2024Q1_INDIVIDUAL.sav` and `NLFS_2024Q2_INDIVIDUAL.sav`) in the `demo/` folder. Further pre-processing (see `pre-processing.py`) of the Nigeria Labour Force Survey (NLFS) data is required before it can be ingested into the pipeline. The script will create two CSV files (`NLFS_2024Q1.csv` and `NLFS_2024Q2.csv`) and store them in the `data/input` folder.
 
 ## Workflow
 
-1. *Build knowledgebases*: Two separate knowledgebases are created. One contains the ISCO statistical coding scheme with labelled examples from the Q1 2024 Nigeria Labour Force Survey. The other knowledgebase is based on the ISIC coding scheme. The 4-digit code is stored as `id` and the text descriptions are concatenated under `text`. Duplicate entries from amongst the labelled examples are removed. Each knowledgebase is saved as a `.csv` file in the `data/knowledgebase` subfolder.
+1. *Build knowledgebases*: Two separate knowledgebases are created. One contains the ISCO statistical coding scheme with labelled examples from the Q1 2024 NLFS. The other knowledgebase is based on the ISIC coding scheme. The 4-digit code is stored as `id` and the text descriptions are concatenated under `text`. Duplicate entries from amongst the labelled examples are removed. Each knowledgebase is saved as a `.csv` file in the `data/knowledgebase` subfolder.
 2. *Create vector store*: Each knowledgebase is vectorised using the chosen embedding model and stored as a vector store. Essentially, this converts the knowledgebase entries into vectors of numbers.
 3. *Build query files*: The Q2 2024 Nigeria Labour Force Survey data is pre-processed to three columns: [`id`,`query`,`prevalidated`]. The `id` column is a joining variable, `query` contains the free text, and `prevalidated` is the enumerator's 4-digit ISIC or ISCO code. **NB** The joining variable concatenates ['interview_id,'hhnumber','hhroster_id,'jobnumber'].
 4. *Search vector store*: The input query (Q2 2024 NLFS) is vectorised and searched against the knowledgebase entries (ISCO/ISIC + Q1 2024 NLFS) in the vector store.
@@ -71,7 +70,7 @@ The `config.json` file contains all of the file paths to the datasets needed in 
 │       ├── ISCO.xlsx
 │       ├── ISIC.xlsx
 |       └── NLFS_2024Q1.csv
-|       └── NLFS_2024Q2.csv     
+|       └── NLFS_2024Q2.csv
 ```
 
 It is good practice to check that the file paths in the `config.json` file are correct before running the code.
@@ -100,7 +99,7 @@ Accuracy is the percentage of correctly classified cases or specifically the per
 An additional plot comparing accuracy against coverage is also drawn.
 
 ## Search results
-The search results generated by the pipeline will be saved in the `/outputs` folder with the name of the coding scheme appended to the filename e.g. `search_results_isic.csv`. 
+The search results generated by the pipeline will be saved in the `/outputs` folder with the name of the coding scheme appended to the filename e.g. `search_results_isic.csv`.
 
 ## Optional: Add manually coded cases to the knowledgebase
 The cases where `[isco/isic]_match_top_1` == FALSE can be manually coded using the 4-digit ISCO/ISIC candidate codes predicted by the tool. When completed these labelled examples can be added to the original knowledgebase. To do this you must update the `config.json` with the path to the manually coded cases and run:
