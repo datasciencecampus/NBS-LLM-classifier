@@ -51,8 +51,8 @@ def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> float:
     y = results_df["accuracy"]
     z = results_df["threshold"]
     xs = np.sort(x)
-    ys = np.array(y)[np.argsort(x)]
-    zs = np.array(z)[np.argsort(x)]
+    ys = np.array(y.notnull())[np.argsort(x)]
+    zs = np.array(z.notnull())[np.argsort(x)]
     x0 = 0.5
     x1 = 0.8
     y0 = np.interp(x0, xs, ys)
