@@ -47,28 +47,39 @@ def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> float:
 
     results_df = pd.DataFrame(results)
 
-    x = results_df["coverage"]
-    y = results_df["accuracy"]
-    z = results_df["threshold"]
-    xs = np.sort(x)
-    ys = np.array(y.notnull())[np.argsort(x)]
-    zs = np.array(z.notnull())[np.argsort(x)]
     x0 = 0.5
     x1 = 0.8
-    y0 = np.interp(x0, xs, ys)
-    y1 = np.interp(x1, xs, ys)
-    z0 = np.interp(x0, xs, zs)
-    z1 = np.interp(x1, xs, zs)
+    interp_df = (
+        results_df[["coverage", "accuracy", "threshold"]]
+        .apply(pd.to_numeric, errors="coerce")
+        .dropna(subset=["coverage", "accuracy", "threshold"])
+        .sort_values("coverage")
+    )
+
+    y0 = np.nan
+    y1 = np.nan
+    z0 = np.nan
+    z1 = np.nan
+    if not interp_df.empty:
+        xs = interp_df["coverage"].to_numpy(dtype=float)
+        ys = interp_df["accuracy"].to_numpy(dtype=float)
+        zs = interp_df["threshold"].to_numpy(dtype=float)
+        y0 = np.interp(x0, xs, ys)
+        y1 = np.interp(x1, xs, ys)
+        z0 = np.interp(x0, xs, zs)
+        z1 = np.interp(x1, xs, zs)
 
     sns.set_style("whitegrid", {"axes.grid": False})
     plt.figure(figsize=(10, 6))
     sns.lineplot(x="coverage", y="accuracy", data=results_df, color="#212121")
     plt.axvline(x=x0, color="#cab2d6", ls=":", lw=2, alpha=0.8)
     plt.axvline(x=x1, color="#6a3d9a", ls=":", lw=2, alpha=0.8)
-    plt.axhline(y=y0, color="#cab2d6", ls=":", lw=2, alpha=0.8)
-    plt.axhline(y=y1, color="#6a3d9a", ls=":", lw=2, alpha=0.8)
-    plt.plot(x0, y0, marker="o", color="#cab2d6")
-    plt.plot(x1, y1, marker="o", color="#6a3d9a")
+    if np.isfinite(y0):
+        plt.axhline(y=y0, color="#cab2d6", ls=":", lw=2, alpha=0.8)
+        plt.plot(x0, y0, marker="o", color="#cab2d6")
+    if np.isfinite(y1):
+        plt.axhline(y=y1, color="#6a3d9a", ls=":", lw=2, alpha=0.8)
+        plt.plot(x1, y1, marker="o", color="#6a3d9a")
     plt.title(
         "Coverage vs. Accuracy for Different Similarity Thresholds",
         fontsize=14,
@@ -79,10 +90,12 @@ def _evaluate_and_plot(search_results: pd.DataFrame, subtitle: str) -> float:
     plt.gcf().text(0.125, 0.9, subtitle, fontsize=9, color="#666")
     plt.xlabel("Coverage")
     plt.ylabel("Accuracy")
+    z0_label = f"{z0:.2f}" if np.isfinite(z0) else "n/a"
+    z1_label = f"{z1:.2f}" if np.isfinite(z1) else "n/a"
     plt.text(
         0.02,
         0.04,
-        f"cov≈0.50> (thr={z0:.2f})\ncov≈0.80> (thr={z1:.2f})",
+        f"cov≈0.50> (thr={z0_label})\ncov≈0.80> (thr={z1_label})",
         transform=plt.gca().transAxes,
         fontsize=10,
         color="black",
