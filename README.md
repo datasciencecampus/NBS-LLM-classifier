@@ -17,7 +17,7 @@ Create and activate a virtual environment
 ```bash
 python -m venv venv
 venv\Scripts\activate.bat # on Windows
-source venv/bin/activate # on a Mac
+source venv/bin/activate # on Mac
 ```
 
 Install the required dependencies
