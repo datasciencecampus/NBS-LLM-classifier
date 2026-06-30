@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 
-from nbs_llm_classifier.evaluate import _coerce_results, evaluate_search_results
+from nbs_llm_classifier.evaluate import (
+    _coerce_results,
+    _evaluate_and_plot,
+    evaluate_search_results,
+)
 from tests.helpers import make_app_config
 
 
@@ -68,3 +73,43 @@ def test_evaluate_search_results_reads_files_and_returns_top1_metrics(
         "ISCO Q2 2024 NLFS - (test-model)",
         "ISIC Q2 2024 NLFS - (test-model)",
     ]
+
+
+def test_evaluate_and_plot_interpolates_numeric_values_with_missing_accuracy(
+    monkeypatch,
+):
+    search_results = pd.DataFrame(
+        [
+            {"pred1": "5211", "prevalidated": "5211", "score": 0.90},
+            {"pred1": "6121", "prevalidated": "5211", "score": 0.60},
+            {"pred1": "0144", "prevalidated": "0144", "score": 0.30},
+        ]
+    )
+
+    interp_inputs: list[tuple[np.ndarray, np.ndarray]] = []
+    real_interp = np.interp
+
+    def spy_interp(x, xp, fp, *args, **kwargs):
+        xp_arr = np.asarray(xp, dtype=float)
+        fp_arr = np.asarray(fp, dtype=float)
+        interp_inputs.append((xp_arr, fp_arr))
+        return real_interp(x, xp, fp, *args, **kwargs)
+
+    monkeypatch.setattr("nbs_llm_classifier.evaluate.np.interp", spy_interp)
+    monkeypatch.setattr("nbs_llm_classifier.evaluate.plt.show", lambda: None)
+
+    top1 = _evaluate_and_plot(search_results, "unit-test subtitle")
+
+    assert top1 == 66.67
+    assert len(interp_inputs) == 4
+
+    for xp_arr, fp_arr in interp_inputs:
+        assert np.issubdtype(xp_arr.dtype, np.floating)
+        assert np.issubdtype(fp_arr.dtype, np.floating)
+        assert np.all(np.diff(xp_arr) >= 0)
+        assert not np.isnan(fp_arr).any()
+
+    accuracy_values = np.concatenate([interp_inputs[0][1], interp_inputs[1][1]])
+    threshold_values = np.concatenate([interp_inputs[2][1], interp_inputs[3][1]])
+    assert np.any((accuracy_values > 0) & (accuracy_values < 1))
+    assert not np.all(np.isin(np.unique(threshold_values), [0.0, 1.0]))
