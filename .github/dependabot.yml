@@ -7,5 +7,9 @@ version: 2
 updates:
   - package-ecosystem: "pip" # See documentation for possible values
     directory: "/" # Location of package manifests
-    schedule:
-      interval: "weekly"
+    chedule:
+      interval: monthly
+      time: "10:30"
+      timezone: "Europe/London"
+    cooldown:
+      default-days: 7
