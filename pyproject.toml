@@ -7,7 +7,8 @@ requires-python = ">=3.12"
 readme = "README.md"
 license = {file = "LICENSE"}
 dependencies = [
-    "classifai[huggingface]>=1.1.0",
+    "classifai[huggingface]",
+    "matplotlib==3.11.0",
     "numpy==2.5.0",
     "openpyxl==3.1.5",
     "pandas==3.0.6",
@@ -38,4 +39,4 @@ addopts = "-ra"
 testpaths = ["tests"]
 
 [tool.uv.sources]
-classifai = { url = "https://github.com/datasciencecampus/classifai/releases/download/v1.0.0/classifai-1.0.0-py3-none-any.whl" }
+classifai = { url = "https://github.com/datasciencecampus/classifai/releases/download/v1.1.1/classifai-1.1.1-py3-none-any.whl" }

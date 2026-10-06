@@ -18,7 +18,7 @@ certifi==2026.7.22
     #   httpcore
     #   httpx
     #   sentry-sdk
-classifai @ https://github.com/datasciencecampus/classifai/releases/download/v1.0.0/classifai-1.0.0-py3-none-any.whl
+classifai @ https://github.com/datasciencecampus/classifai/releases/download/v1.1.1/classifai-1.1.1-py3-none-any.whl
     # via nbs-llm-classifer
 click==8.5.0
     # via
@@ -67,6 +67,7 @@ fonttools==4.66.1
     # via matplotlib
 fsspec==2026.9.0
     # via
+    #   classifai
     #   huggingface-hub
     #   torch
 googleapis-common-protos==1.75.5
@@ -105,8 +106,10 @@ markdown-it-py==4.2.0
     # via rich
 markupsafe==3.0.4
     # via jinja2
-matplotlib==3.11.2
-    # via seaborn
+matplotlib==3.11.0
+    # via
+    #   nbs-llm-classifer
+    #   seaborn
 mdurl==0.1.2
     # via markdown-it-py
 mpmath==1.3.0
