@@ -322,4 +322,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# uv
+uv.lock
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,r,python
